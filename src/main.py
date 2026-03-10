@@ -1,0 +1,237 @@
+"""Hiro Bot — Sushi da Hora WhatsApp AI Agent (LangGraph + FastAPI + Stevo)."""
+
+from __future__ import annotations
+
+import logging
+import os
+
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+from src.config import settings
+from src.integrations.stevo import parse_stevo_webhook, send_text
+from src.agent.graph import run_agent
+from src.agent.nodes import transcribe_audio, analyze_image
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(
+    title="Hiro Bot",
+    description="Atendente IA do Sushi da Hora — WhatsApp (LangGraph + Stevo)",
+    version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ─── KEYWORD ACTIVATION SYSTEM ────────────────────────────
+# Tracks which phone numbers have the bot active
+# Bot only responds to conversations where someone sent the activation keyword
+_active_sessions: dict[str, bool] = {}
+
+
+def is_active(phone: str) -> bool:
+    """Check if bot is active for this phone number."""
+    return _active_sessions.get(phone, False)
+
+
+def activate(phone: str):
+    """Activate bot for this phone number."""
+    _active_sessions[phone] = True
+    logger.info(f"🍣 HIRO ATIVADO para {phone}")
+
+
+def deactivate(phone: str):
+    """Deactivate bot for this phone number."""
+    _active_sessions.pop(phone, None)
+    logger.info(f"⏹️ HIRO DESATIVADO para {phone}")
+
+
+# ─── ENDPOINTS ─────────────────────────────────────────────
+
+@app.post("/", include_in_schema=False)
+async def root_post():
+    return JSONResponse({"status": "ok"})
+
+
+@app.get("/health")
+async def health():
+    return {
+        "status": "ok",
+        "service": "hiro-bot",
+        "version": "1.0.0",
+        "model": settings.openai_model,
+        "active_sessions": len(_active_sessions),
+        "keyword_activate": settings.keyword_activate,
+        "keyword_deactivate": settings.keyword_deactivate,
+    }
+
+
+@app.get("/sessions")
+async def list_sessions():
+    """List all active bot sessions."""
+    return {"active_sessions": _active_sessions}
+
+
+@app.post("/webhook/stevo")
+async def stevo_webhook(request: Request):
+    """Receive Stevo/WhatsApp webhook and process with LangGraph agent."""
+    if not settings.openai_api_key:
+        return JSONResponse(
+            {"status": "error", "detail": "OPENAI_API_KEY not configured"},
+            status_code=503,
+        )
+
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+
+    parsed = parse_stevo_webhook(payload)
+    if parsed is None:
+        return JSONResponse({"status": "skipped", "reason": "not inbound or filtered"})
+
+    # Skip outbound messages
+    if parsed.get("is_from_me"):
+        return JSONResponse({"status": "skipped", "reason": "outbound"})
+
+    phone = parsed["phone"]
+    contact_name = parsed["contact_name"]
+    text = parsed["text"]
+    content_type = parsed["content_type"]
+
+    logger.info(f"Mensagem recebida: phone={phone} tipo={content_type} msg={text[:50]}...")
+
+    # ─── KEYWORD CHECK ─────────────────────────────────────
+    text_lower = text.strip().lower()
+
+    # Check activation keyword
+    if text_lower == settings.keyword_activate.lower():
+        activate(phone)
+        try:
+            await send_text(
+                phone,
+                "Oi! Eu sou o Hiro, assistente do Sushi da Hora 🍣\n\n"
+                "Posso te ajudar com informações sobre nossas 5 unidades em Fortaleza, "
+                "cardápio, horários, formas de pagamento e muito mais!\n\n"
+                "Como posso te ajudar? 😊"
+            )
+        except Exception as e:
+            logger.error(f"Erro ao enviar saudação: {e}")
+        return JSONResponse({"status": "activated", "phone": phone})
+
+    # Check deactivation keyword
+    if text_lower == settings.keyword_deactivate.lower():
+        deactivate(phone)
+        try:
+            await send_text(
+                phone,
+                "Atendimento do Hiro encerrado. Obrigado! 🍣\n"
+                "Se precisar de novo, é só digitar #hiro"
+            )
+        except Exception as e:
+            logger.error(f"Erro ao enviar despedida: {e}")
+        return JSONResponse({"status": "deactivated", "phone": phone})
+
+    # If bot is not active for this phone, ignore
+    if not is_active(phone):
+        logger.info(f"Bot inativo para {phone} — ignorando mensagem")
+        return JSONResponse({"status": "skipped", "reason": "bot not active for this phone"})
+
+    # ─── MEDIA PREPROCESSING ──────────────────────────────
+    if content_type == "audio" and parsed.get("audio_base64"):
+        try:
+            text = await transcribe_audio(
+                parsed["audio_base64"], parsed.get("audio_mimetype", "audio/ogg")
+            )
+            logger.info(f"Audio transcrito: {text[:80]}...")
+        except Exception as e:
+            logger.error(f"Erro ao transcrever audio: {e}")
+            text = "[Audio recebido mas nao transcrito]"
+
+    elif content_type == "image" and parsed.get("image_url"):
+        try:
+            image_desc = await analyze_image(parsed["image_url"])
+            text = f"[IMAGEM] {image_desc}" if not text else f"{text} | [IMAGEM] {image_desc}"
+            logger.info(f"Imagem analisada: {text[:80]}...")
+        except Exception as e:
+            logger.error(f"Erro ao analisar imagem: {e}")
+            text = text or "[Imagem recebida]"
+
+    if not text:
+        return JSONResponse({"status": "skipped", "reason": "no text content"})
+
+    # ─── RUN LANGGRAPH AGENT ──────────────────────────────
+    try:
+        result = await run_agent(
+            phone=phone,
+            contact_name=contact_name,
+            text=text,
+        )
+        logger.info(f"Agente concluiu para {phone}: {result[:80]}...")
+        return JSONResponse({"status": "processed", "phone": phone})
+    except Exception as e:
+        logger.error(f"Erro no agente: {e}", exc_info=True)
+        try:
+            await send_text(
+                phone,
+                "Desculpe, tive um problema técnico. Tente novamente em instantes! 🙏",
+            )
+        except Exception:
+            pass
+        return JSONResponse({"status": "error", "detail": str(e)}, status_code=500)
+
+
+@app.post("/webhook/test")
+async def test_webhook(request: Request):
+    """Test endpoint — simulates a message without Stevo."""
+    payload = await request.json()
+    phone = payload.get("phone", "5500000000000")
+    message = payload.get("message", "Oi")
+    contact_name = payload.get("name", "Teste")
+
+    # Auto-activate for test
+    activate(phone)
+
+    try:
+        result = await run_agent(
+            phone=phone,
+            contact_name=contact_name,
+            text=message,
+        )
+        return JSONResponse({"result": result})
+    except Exception as e:
+        logger.error(f"Erro no teste: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+# ─── ACTIVATE/DEACTIVATE VIA API ──────────────────────────
+
+@app.post("/bot/activate/{phone}")
+async def activate_bot(phone: str):
+    """Activate bot for a phone number via API."""
+    activate(phone)
+    return JSONResponse({"status": "activated", "phone": phone})
+
+
+@app.post("/bot/deactivate/{phone}")
+async def deactivate_bot(phone: str):
+    """Deactivate bot for a phone number via API."""
+    deactivate(phone)
+    return JSONResponse({"status": "deactivated", "phone": phone})
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
