@@ -125,10 +125,149 @@ async def adicionar_nota(contact_id: str, nota: str) -> str:
         return f"ERRO ao adicionar nota: {e}"
 
 
+# ─── SISTEMA DE PEDIDOS (SIMULADO P/ DEMO) ───────────────
+
+# Pedidos fake realistas para demonstração
+_PEDIDOS_SIMULADOS = {
+    "4521": {
+        "numero": "#4521",
+        "status": "em_preparo",
+        "unidade": "Maraponga",
+        "itens": "1x Combo Sushi Premium (40 peças), 1x Yakisoba Frango, 2x Refrigerante",
+        "valor": "R$ 142,90",
+        "pagamento": "PIX",
+        "previsao": "45 minutos",
+        "horario_pedido": "19:32",
+        "entregador": "João",
+    },
+    "4522": {
+        "numero": "#4522",
+        "status": "saiu_entrega",
+        "unidade": "Parquelândia",
+        "itens": "2x Temaki Salmão, 1x Hot Roll (10 peças), 1x Suco Natural",
+        "valor": "R$ 89,50",
+        "pagamento": "Cartão Crédito 3x",
+        "previsao": "15 minutos",
+        "horario_pedido": "19:15",
+        "entregador": "Carlos",
+    },
+    "4523": {
+        "numero": "#4523",
+        "status": "entregue",
+        "unidade": "Messejana",
+        "itens": "1x Combo Família (60 peças), 1x Yakisoba Camarão",
+        "valor": "R$ 198,00",
+        "pagamento": "Dinheiro",
+        "previsao": "Entregue às 18:45",
+        "horario_pedido": "17:50",
+        "entregador": "Pedro",
+    },
+    "4524": {
+        "numero": "#4524",
+        "status": "em_preparo",
+        "unidade": "Barra do Ceará",
+        "itens": "1x Sashimi Misto, 2x Hot Roll Filadélfia, 1x Edamame",
+        "valor": "R$ 115,00",
+        "pagamento": "PIX",
+        "previsao": "35 minutos",
+        "horario_pedido": "19:40",
+        "entregador": "—",
+    },
+    "4525": {
+        "numero": "#4525",
+        "status": "cancelado",
+        "unidade": "Maracanaú",
+        "itens": "1x Combo Casal (30 peças)",
+        "valor": "R$ 79,90 (estornado)",
+        "pagamento": "Cartão Débito",
+        "previsao": "—",
+        "horario_pedido": "18:20",
+        "entregador": "—",
+        "motivo_cancelamento": "Cliente solicitou cancelamento antes do preparo",
+    },
+}
+
+_STATUS_LABELS = {
+    "em_preparo": "🔥 Em preparo na cozinha",
+    "saiu_entrega": "🛵 Saiu para entrega",
+    "entregue": "✅ Entregue",
+    "cancelado": "❌ Cancelado",
+    "aguardando": "⏳ Aguardando confirmação",
+}
+
+
+@tool
+async def consultar_pedido(numero_pedido: str) -> str:
+    """Consulta o status de um pedido no sistema. Use quando o cliente perguntar sobre seu pedido,
+    status da entrega, ou onde esta o pedido dele.
+
+    Args:
+        numero_pedido: Numero do pedido (ex: "4521" ou "#4521"). Se o cliente nao souber o numero, use o telefone dele para buscar.
+    """
+    # Limpa o numero
+    num = numero_pedido.strip().replace("#", "")
+
+    pedido = _PEDIDOS_SIMULADOS.get(num)
+    if not pedido:
+        return (
+            f"Pedido #{num} NAO encontrado no sistema. "
+            "Pode ser que o numero esteja errado. "
+            "Pergunte o numero correto ao cliente ou busque pelo telefone. "
+            "Se nao conseguir localizar, transfira para um atendente humano."
+        )
+
+    status_label = _STATUS_LABELS.get(pedido["status"], pedido["status"])
+    info = (
+        f"PEDIDO ENCONTRADO:\n"
+        f"- Número: {pedido['numero']}\n"
+        f"- Status: {status_label}\n"
+        f"- Unidade: {pedido['unidade']}\n"
+        f"- Itens: {pedido['itens']}\n"
+        f"- Valor: {pedido['valor']}\n"
+        f"- Pagamento: {pedido['pagamento']}\n"
+        f"- Previsão: {pedido['previsao']}\n"
+        f"- Horário do pedido: {pedido['horario_pedido']}\n"
+    )
+
+    if pedido.get("entregador") and pedido["entregador"] != "—":
+        info += f"- Entregador: {pedido['entregador']}\n"
+
+    if pedido.get("motivo_cancelamento"):
+        info += f"- Motivo cancelamento: {pedido['motivo_cancelamento']}\n"
+
+    return info
+
+
+@tool
+async def consultar_pedido_por_telefone(phone: str) -> str:
+    """Busca pedidos recentes de um cliente pelo numero de telefone.
+    Use quando o cliente quer saber do pedido mas nao tem o numero do pedido.
+
+    Args:
+        phone: Numero de telefone do cliente (ex: 558599210061)
+    """
+    # Simulação: retorna um pedido "encontrado" para qualquer telefone
+    # Em produção, isso consultaria o sistema real de pedidos
+    pedido = _PEDIDOS_SIMULADOS["4521"]  # Sempre retorna o pedido em preparo
+    status_label = _STATUS_LABELS.get(pedido["status"], pedido["status"])
+
+    return (
+        f"1 pedido encontrado para este telefone:\n\n"
+        f"- Número: {pedido['numero']}\n"
+        f"- Status: {status_label}\n"
+        f"- Unidade: {pedido['unidade']}\n"
+        f"- Itens: {pedido['itens']}\n"
+        f"- Valor: {pedido['valor']}\n"
+        f"- Previsão: {pedido['previsao']}\n"
+    )
+
+
 ALL_TOOLS = [
     enviar_mensagem,
     buscar_contato,
     adicionar_tags,
+    consultar_pedido,
+    consultar_pedido_por_telefone,
     transferir_humano,
     adicionar_nota,
 ]
