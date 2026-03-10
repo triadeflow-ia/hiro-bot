@@ -1,0 +1,39 @@
+============================================================
+  HIRO BOT — RELATÓRIO DE QA AUTOMATIZADO
+============================================================
+  Data: 2026-03-10 20:05
+  Cenários: 33 | Passou: 33 | Falhou: 0
+  Taxa de sucesso: 100%
+  Tempo total: 601.0s (18.2s por teste)
+
+────────────────────────────────────────────────────────────
+  NOTAS MÉDIAS (0-10)
+────────────────────────────────────────────────────────────
+  Precisão:     ████████░░ 8.0
+  Tom:          █████████░ 9.0
+  Brevidade:    ███████░░░ 7.5
+  Tool Usage:   █████████░ 9.5
+  Regras:       █████████░ 9.1
+  GERAL:        ████████░░ 8.6
+
+────────────────────────────────────────────────────────────
+  POR CATEGORIA
+────────────────────────────────────────────────────────────
+  ✅ consulta_pedido      3/3 passou  (média: 8.8)
+  ✅ duvidas              3/3 passou  (média: 8.7)
+  ✅ edge_cases           3/3 passou  (média: 8.6)
+  ✅ fazer_pedido         3/3 passou  (média: 8.6)
+  ✅ fluxo                3/3 passou  (média: 8.7)
+  ✅ fora_escopo          3/3 passou  (média: 8.7)
+  ✅ reclamacao           3/3 passou  (média: 8.4)
+  ✅ saudacao             3/3 passou  (média: 9.0)
+  ✅ tom                  3/3 passou  (média: 8.6)
+  ✅ transferir           3/3 passou  (média: 7.9)
+  ✅ unidades             3/3 passou  (média: 8.6)
+
+────────────────────────────────────────────────────────────
+  💡 SUGESTÕES DE MELHORIA
+────────────────────────────────────────────────────────────
+  Nenhuma sugestão — tudo passou! 🎉
+
+============================================================
