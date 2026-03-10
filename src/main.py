@@ -100,8 +100,27 @@ async def stevo_webhook(request: Request):
     if parsed is None:
         return JSONResponse({"status": "skipped", "reason": "not inbound or filtered"})
 
-    # Skip outbound messages
+    # For outbound (IsFromMe) messages: only process keyword commands, skip everything else
     if parsed.get("is_from_me"):
+        # Check if it's a keyword command from the owner
+        phone = parsed.get("phone", "")
+        # We need to extract text from the raw payload for outbound messages
+        raw_msg = payload.get("data", {}).get("Message", {})
+        outbound_text = (
+            raw_msg.get("conversation")
+            or raw_msg.get("extendedTextMessage", {}).get("text")
+            or ""
+        ).strip().lower()
+
+        if outbound_text == settings.keyword_activate.lower():
+            activate(phone)
+            logger.info(f"Owner ativou Hiro para {phone} via IsFromMe")
+            return JSONResponse({"status": "activated_by_owner", "phone": phone})
+        elif outbound_text == settings.keyword_deactivate.lower():
+            deactivate(phone)
+            logger.info(f"Owner desativou Hiro para {phone} via IsFromMe")
+            return JSONResponse({"status": "deactivated_by_owner", "phone": phone})
+
         return JSONResponse({"status": "skipped", "reason": "outbound"})
 
     phone = parsed["phone"]
