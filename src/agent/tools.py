@@ -323,26 +323,33 @@ async def enviar_promo_do_dia(phone: str) -> str:
     promo = PROMOS_DO_DIA[dia]
     image_url = f"{_PROMO_BASE_URL}/{promo['imagem']}"
 
+    caption = (
+        f"*{promo['nome']}* 🍣\n\n"
+        f"{promo['descricao']}\n\n"
+        f"💰 *{promo['preco']}*\n"
+        f"📍 Valido hoje em todas as unidades!"
+    )
+
     try:
-        # Send the promo image
-        await stevo.send_media(phone, image_url, promo["nome"], "image")
+        # Send promo image with full caption
+        await stevo.send_media(phone, image_url, caption, "image")
         logger.info(f"[HIRO→{phone}] [IMAGEM PROMO] {promo['nome']}")
         return (
-            f"Imagem da promo enviada! Agora envie uma mensagem de texto com os detalhes:\n"
+            f"Promo enviada com imagem e descricao!\n"
             f"Promo: {promo['nome']}\n"
-            f"Descricao: {promo['descricao']}\n"
             f"Preco: {promo['preco']}\n"
-            f"Valido somente hoje em todas as unidades."
+            f"Se o cliente tiver interesse, pergunte qual unidade fica melhor pra ele."
         )
     except Exception as e:
         logger.error(f"Erro ao enviar promo: {e}")
-        # Fallback: return promo info as text even if image fails
+        # Fallback: send as text via enviar_mensagem
+        logger.error(f"Erro ao enviar promo: {e}")
         return (
-            f"Nao consegui enviar a imagem, mas aqui estao os detalhes da promo:\n"
-            f"Promo: {promo['nome']}\n"
-            f"Descricao: {promo['descricao']}\n"
-            f"Preco: {promo['preco']}\n"
-            f"Valido somente hoje em todas as unidades."
+            f"Nao consegui enviar a imagem. Envie esta mensagem como texto para o cliente:\n"
+            f"*{promo['nome']}* 🍣\n"
+            f"{promo['descricao']}\n"
+            f"💰 *{promo['preco']}*\n"
+            f"📍 Valido hoje em todas as unidades!"
         )
 
 
