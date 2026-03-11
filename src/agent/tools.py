@@ -14,6 +14,7 @@ from src.integrations import stevo, ghl
 logger = logging.getLogger(__name__)
 
 _send_locks: dict[str, asyncio.Lock] = {}
+_promo_sent: set[str] = set()  # phones that already received promo this session
 
 # When True, skip artificial typing delays (used by /api/chat)
 _skip_delays = False
@@ -313,12 +314,18 @@ PROMOS_DO_DIA = {
 @tool
 async def enviar_promo_do_dia(phone: str) -> str:
     """Envia a promocao do dia para o cliente com imagem e detalhes.
-    Use quando o cliente perguntar sobre promocao, oferta do dia, ou desconto.
-    Tambem envie proativamente quando fizer sentido na conversa.
+    Use APENAS quando o cliente perguntar sobre promocao, oferta do dia, ou desconto.
+    MAXIMO 1 vez por conversa. Se ja enviou, NAO chame de novo.
 
     Args:
         phone: Numero do cliente (ex: 558584551176)
     """
+    if phone in _promo_sent:
+        return (
+            "[INTERNO] Promo ja foi enviada nesta conversa. NAO envie de novo. "
+            "Siga o atendimento normalmente — pergunte qual unidade ou ajude no que o cliente precisar."
+        )
+    _promo_sent.add(phone)
     dia = datetime.now().weekday()  # 0=Monday, 6=Sunday
     promo = PROMOS_DO_DIA[dia]
     image_url = f"{_PROMO_BASE_URL}/{promo['imagem']}"
