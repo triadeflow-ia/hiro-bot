@@ -1260,6 +1260,113 @@
       .pricing-grid { grid-template-columns: 1fr; }
     }
 
+    /* === TOKEN CALCULATOR === */
+    .calc-box {
+      max-width: 700px;
+      margin: 2rem auto 0;
+      border: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      position: relative;
+    }
+
+    .calc-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--primary);
+    }
+
+    .calc-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .calc-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .calc-slider-label {
+      font-size: 0.85rem;
+      color: var(--gray-300);
+      min-width: 140px;
+    }
+
+    .calc-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: var(--border);
+      outline: none;
+      border-radius: 2px;
+    }
+
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .calc-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .calc-slider-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .calc-result {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(219, 12, 20, 0.05);
+      border: 1px solid rgba(219, 12, 20, 0.15);
+      text-align: center;
+    }
+
+    .calc-result-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+    }
+
+    .calc-result-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .calc-result-value .currency { font-size: 0.9rem; vertical-align: super; font-weight: 400; }
+    .calc-result-value .period { font-size: 0.8rem; color: var(--gray-500); font-weight: 400; }
+
+    .calc-result-detail {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+    }
+
     /* === ROADMAP === */
     .roadmap {
       position: relative;
@@ -2041,8 +2148,23 @@
               <div class="pricing-detail">Suporte, manutencao e otimizacoes</div>
             </div>
           </div>
-          <div class="pricing-tokens">
-            <strong>Tokens de IA:</strong> consumo por conta do cliente (estimativa R$ 150–300/mes dependendo do volume de atendimento)
+          <div class="calc-box">
+            <div class="calc-title">Calculadora de Tokens IA</div>
+            <div class="calc-slider-row">
+              <span class="calc-slider-label">Atendimentos/dia</span>
+              <input type="range" class="calc-slider" id="calc-chats" min="10" max="200" value="50" step="5">
+              <span class="calc-slider-value" id="calc-chats-val">50</span>
+            </div>
+            <div class="calc-slider-row">
+              <span class="calc-slider-label">Msgs por atendimento</span>
+              <input type="range" class="calc-slider" id="calc-msgs" min="3" max="15" value="6" step="1">
+              <span class="calc-slider-value" id="calc-msgs-val">6</span>
+            </div>
+            <div class="calc-result">
+              <div class="calc-result-label">Custo estimado de tokens</div>
+              <div class="calc-result-value" id="calc-total"><span class="currency">R$</span> 180 <span class="period">/mes</span></div>
+              <div class="calc-result-detail" id="calc-detail">50 atendimentos x 6 msgs x 30 dias = 9.000 interacoes/mes</div>
+            </div>
           </div>
         </div>
 
@@ -2172,6 +2294,37 @@
     }, { threshold: 0.15 });
     lineObserver.observe(roadmap);
   }
+
+  // === TOKEN CALCULATOR ===
+  (function() {
+    const chats = document.getElementById('calc-chats');
+    const msgs = document.getElementById('calc-msgs');
+    const chatsVal = document.getElementById('calc-chats-val');
+    const msgsVal = document.getElementById('calc-msgs-val');
+    const total = document.getElementById('calc-total');
+    const detail = document.getElementById('calc-detail');
+
+    if (!chats) return;
+
+    function update() {
+      const c = parseInt(chats.value);
+      const m = parseInt(msgs.value);
+      chatsVal.textContent = c;
+      msgsVal.textContent = m;
+
+      const interacoes = c * m * 30;
+      // ~800 tokens por interação (input+output), Claude Haiku ~$0.25/1M input + $1.25/1M output
+      // Simplificado: ~R$0.02 por interação completa
+      const custoMensal = Math.round(interacoes * 0.02);
+
+      total.innerHTML = '<span class="currency">R$</span> ' + custoMensal + ' <span class="period">/mes</span>';
+      detail.textContent = c + ' atendimentos x ' + m + ' msgs x 30 dias = ' + interacoes.toLocaleString('pt-BR') + ' interacoes/mes';
+    }
+
+    chats.addEventListener('input', update);
+    msgs.addEventListener('input', update);
+    update();
+  })();
 
   // === LIVE CHAT ===
   (function() {
