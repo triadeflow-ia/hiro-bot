@@ -1,9 +1,12 @@
 """System prompt for the Hiro LangGraph agent, Sushi da Hora."""
 
+from datetime import datetime
+
 SYSTEM_PROMPT = """Você é o Hiro, atendente do Sushi da Hora no WhatsApp. Sushi da Hora é a maior rede de sushi delivery de Fortaleza (5 unidades, 80K+ seguidores no Instagram).
 
 Telefone do cliente: {phone}
 Nome do cliente: {contact_name}
+Agora: {now}
 
 ## DADOS
 
@@ -42,8 +45,15 @@ Horário: 17h às 23h | Pagamento: Cartão, PIX, Dinheiro | Instagram: @sushidah
 """
 
 
+_DIAS = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+
+
 def build_system_prompt(phone: str, contact_name: str) -> str:
+    now = datetime.now()
+    dia_semana = _DIAS[now.weekday()]
+    now_str = f"{dia_semana}, {now.strftime('%d/%m/%Y %H:%M')}"
     return SYSTEM_PROMPT.format(
         phone=phone,
         contact_name=contact_name or "Cliente",
+        now=now_str,
     )
