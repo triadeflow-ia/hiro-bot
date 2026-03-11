@@ -1174,6 +1174,92 @@
       font-size: 0.75rem;
     }
 
+    /* === PRICING === */
+    .pricing-section {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2.5rem;
+      text-align: center;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 700px;
+      margin: 2rem auto 0;
+    }
+
+    .pricing-item {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .pricing-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--primary);
+    }
+
+    .pricing-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-anchor {
+      font-size: 1rem;
+      color: var(--gray-500);
+      text-decoration: line-through;
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .pricing-value .currency {
+      font-size: 1rem;
+      font-weight: 400;
+      vertical-align: super;
+    }
+
+    .pricing-value .period {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--gray-500);
+    }
+
+    .pricing-detail {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+    }
+
+    .pricing-tokens {
+      margin-top: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: rgba(219, 12, 20, 0.05);
+      border: 1px solid rgba(219, 12, 20, 0.15);
+      font-size: 0.85rem;
+      color: var(--gray-300);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .pricing-tokens strong { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
     /* === ROADMAP === */
     .roadmap {
       position: relative;
@@ -1939,6 +2025,27 @@
             </ul>
           </div>
         </div>
+
+        <div class="pricing-section fade-in">
+          <div class="pricing-grid">
+            <div class="pricing-item">
+              <div class="pricing-label">Implantacao</div>
+              <div class="pricing-anchor">R$ 12.000</div>
+              <div class="pricing-value"><span class="currency">R$</span> 6.900</div>
+              <div class="pricing-detail">Setup completo — IA + CRM + Automacoes + Dashboard</div>
+            </div>
+            <div class="pricing-item">
+              <div class="pricing-label">Recorrencia</div>
+              <div class="pricing-anchor">R$ 2.500/mes</div>
+              <div class="pricing-value"><span class="currency">R$</span> 997 <span class="period">/mes</span></div>
+              <div class="pricing-detail">Suporte, manutencao, otimizacoes e melhorias continuas</div>
+            </div>
+          </div>
+          <div class="pricing-tokens">
+            <strong>Tokens de IA:</strong> consumo por conta do cliente (estimativa R$ 150–300/mes dependendo do volume de atendimento)
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
