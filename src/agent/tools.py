@@ -322,8 +322,8 @@ async def enviar_promo_do_dia(phone: str) -> str:
     """
     if phone in _promo_sent:
         return (
-            "[INTERNO] Promo ja foi enviada nesta conversa. NAO envie de novo. "
-            "Siga o atendimento normalmente — pergunte qual unidade ou ajude no que o cliente precisar."
+            "[INTERNO] Promo JA FOI enviada. NAO chame esta tool de novo. "
+            "Use enviar_mensagem para perguntar qual unidade o cliente quer pedir."
         )
     _promo_sent.add(phone)
     dia = datetime.now().weekday()  # 0=Monday, 6=Sunday
@@ -342,9 +342,8 @@ async def enviar_promo_do_dia(phone: str) -> str:
         await stevo.send_media(phone, image_url, caption, "image")
         logger.info(f"[HIRO→{phone}] [IMAGEM PROMO] {promo['nome']}")
         return (
-            f"[INTERNO - NAO repita detalhes da promo, a imagem com descricao ja foi enviada] "
-            f"Promo {promo['nome']} ({promo['preco']}) enviada. "
-            f"Espere o cliente reagir antes de perguntar qualquer coisa."
+            f"[INTERNO] Promo {promo['nome']} ({promo['preco']}) enviada com imagem. "
+            f"NAO repita os detalhes. Quando o cliente quiser pedir, pergunte qual unidade."
         )
     except Exception as e:
         logger.error(f"Erro ao enviar promo: {e}")
