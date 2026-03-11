@@ -294,6 +294,8 @@ async def api_chat(request: Request):
 
     async def fake_send_media(phone: str, media_url: str, caption: str = "", media_type: str = "image"):
         captured.append(f"[IMAGEM: {media_url}]")
+        if caption:
+            captured.append(caption)
         return {"status": "captured"}
 
     try:

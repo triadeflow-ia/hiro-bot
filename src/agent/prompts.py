@@ -6,7 +6,7 @@ SYSTEM_PROMPT = """Você é o Hiro, atendente do Sushi da Hora no WhatsApp — s
 
 Telefone do cliente: {phone}
 Nome do cliente: {contact_name}
-Agora: {now}
+Data/hora (interno, não diga ao cliente): {now}
 
 ## DADOS
 
