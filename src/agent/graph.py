@@ -240,6 +240,15 @@ async def run_agent(
             )
 
             messages = result.get("messages", [])
+
+            # Check if agent already sent messages via enviar_mensagem tool
+            sent_via_tool = any(
+                getattr(msg, "name", None) == "enviar_mensagem"
+                and "Mensagem enviada" in (msg.content or "")
+                for msg in messages
+                if hasattr(msg, "name")
+            )
+
             ai_response = None
             for msg in reversed(messages):
                 if isinstance(msg, AIMessage) and msg.content and not getattr(msg, "tool_calls", None):
@@ -249,6 +258,16 @@ async def run_agent(
 
             if ai_response:
                 _add_to_history(phone, "ai", ai_response)
+
+                # If agent didn't send via tool, send the response now
+                if not sent_via_tool:
+                    try:
+                        from src.integrations.stevo import send_text
+                        await send_text(phone, ai_response)
+                        logger.info(f"[FALLBACK SEND] {phone}: {ai_response[:80]}...")
+                    except Exception as e:
+                        logger.error(f"Erro no fallback send para {phone}: {e}")
+
                 return ai_response
 
             return "Mensagem processada."
