@@ -1,10 +1,11 @@
-"""LangGraph tools — actions Hiro can take via Stevo and GHL."""
+"""LangGraph tools for Hiro (Sushi da Hora) via Stevo and GHL."""
 
 from __future__ import annotations
 
 import asyncio
 import logging
 import random
+from datetime import datetime
 
 from langchain_core.tools import tool
 
@@ -13,6 +14,9 @@ from src.integrations import stevo, ghl
 logger = logging.getLogger(__name__)
 
 _send_locks: dict[str, asyncio.Lock] = {}
+
+# When True, skip artificial typing delays (used by /api/chat)
+_skip_delays = False
 
 
 def _get_lock(phone: str) -> asyncio.Lock:
@@ -33,10 +37,11 @@ async def enviar_mensagem(phone: str, message: str) -> str:
     lock = _get_lock(phone)
     async with lock:
         try:
-            char_count = len(message)
-            base_delay = min(max(char_count / 50, 1.5), 3.5)
-            jitter = random.uniform(0.5, 1.5)
-            await asyncio.sleep(base_delay + jitter)
+            if not _skip_delays:
+                char_count = len(message)
+                base_delay = min(max(char_count / 50, 1.5), 3.5)
+                jitter = random.uniform(0.5, 1.5)
+                await asyncio.sleep(base_delay + jitter)
 
             await stevo.send_text(phone, message)
             logger.info(f"[HIRO→{phone}] {message}")
@@ -127,7 +132,6 @@ async def adicionar_nota(contact_id: str, nota: str) -> str:
 
 # ─── SISTEMA DE PEDIDOS (SIMULADO P/ DEMO) ───────────────
 
-# Pedidos fake realistas para demonstração
 _PEDIDOS_SIMULADOS = {
     "4521": {
         "numero": "#4521",
@@ -171,7 +175,7 @@ _PEDIDOS_SIMULADOS = {
         "pagamento": "PIX",
         "previsao": "35 minutos",
         "horario_pedido": "19:40",
-        "entregador": "—",
+        "entregador": "",
     },
     "4525": {
         "numero": "#4525",
@@ -180,9 +184,9 @@ _PEDIDOS_SIMULADOS = {
         "itens": "1x Combo Casal (30 peças)",
         "valor": "R$ 79,90 (estornado)",
         "pagamento": "Cartão Débito",
-        "previsao": "—",
+        "previsao": "",
         "horario_pedido": "18:20",
-        "entregador": "—",
+        "entregador": "",
         "motivo_cancelamento": "Cliente solicitou cancelamento antes do preparo",
     },
 }
@@ -198,22 +202,17 @@ _STATUS_LABELS = {
 
 @tool
 async def consultar_pedido(numero_pedido: str) -> str:
-    """Consulta o status de um pedido no sistema. Use quando o cliente perguntar sobre seu pedido,
-    status da entrega, ou onde esta o pedido dele.
+    """Consulta o status de um pedido no sistema pelo numero.
 
     Args:
-        numero_pedido: Numero do pedido (ex: "4521" ou "#4521"). Se o cliente nao souber o numero, use o telefone dele para buscar.
+        numero_pedido: Numero do pedido (ex: "4521" ou "#4521").
     """
-    # Limpa o numero
     num = numero_pedido.strip().replace("#", "")
-
     pedido = _PEDIDOS_SIMULADOS.get(num)
     if not pedido:
         return (
             f"Pedido #{num} NAO encontrado no sistema. "
-            "Pode ser que o numero esteja errado. "
-            "Pergunte o numero correto ao cliente ou busque pelo telefone. "
-            "Se nao conseguir localizar, transfira para um atendente humano."
+            "Pergunte o numero correto ao cliente ou busque pelo telefone."
         )
 
     status_label = _STATUS_LABELS.get(pedido["status"], pedido["status"])
@@ -229,9 +228,8 @@ async def consultar_pedido(numero_pedido: str) -> str:
         f"- Horário do pedido: {pedido['horario_pedido']}\n"
     )
 
-    if pedido.get("entregador") and pedido["entregador"] != "—":
+    if pedido.get("entregador") and pedido["entregador"] != "":
         info += f"- Entregador: {pedido['entregador']}\n"
-
     if pedido.get("motivo_cancelamento"):
         info += f"- Motivo cancelamento: {pedido['motivo_cancelamento']}\n"
 
@@ -241,14 +239,11 @@ async def consultar_pedido(numero_pedido: str) -> str:
 @tool
 async def consultar_pedido_por_telefone(phone: str) -> str:
     """Busca pedidos recentes de um cliente pelo numero de telefone.
-    Use quando o cliente quer saber do pedido mas nao tem o numero do pedido.
 
     Args:
         phone: Numero de telefone do cliente (ex: 558599210061)
     """
-    # Simulação: retorna um pedido "encontrado" para qualquer telefone
-    # Em produção, isso consultaria o sistema real de pedidos
-    pedido = _PEDIDOS_SIMULADOS["4521"]  # Sempre retorna o pedido em preparo
+    pedido = _PEDIDOS_SIMULADOS["4521"]
     status_label = _STATUS_LABELS.get(pedido["status"], pedido["status"])
 
     return (
@@ -262,6 +257,122 @@ async def consultar_pedido_por_telefone(phone: str) -> str:
     )
 
 
+# ─── PROMOÇÕES DO DIA ─────────────────────────────────────
+
+from src.config import settings
+
+# Base URL for promo images
+_PROMO_BASE_URL = settings.promo_base_url
+
+PROMOS_DO_DIA = {
+    0: {  # Segunda
+        "nome": "Segunda Samurai",
+        "descricao": "Combo Samurai, 30 pecas de sushi sortidas por apenas R$29,90! Nigiri, uramaki e hosomaki pra batalhar a semana.",
+        "preco": "R$29,90",
+        "imagem": "segunda-samurai.png",
+    },
+    1: {  # Terca
+        "nome": "Terca Crocante",
+        "descricao": "Hot Roll e Tempura em dobro! 10 pecas de hot roll crocante por R$19,90. Aquele crocante que todo mundo ama.",
+        "preco": "R$19,90",
+        "imagem": "terca-crocante.png",
+    },
+    2: {  # Quarta
+        "nome": "Quarta Maluca",
+        "descricao": "40 pecas variadas por R$38,00! Salmao, atum, camarao, cream cheese, um mix insano de sabores.",
+        "preco": "R$38,00",
+        "imagem": "quarta-maluca.png",
+    },
+    3: {  # Quinta
+        "nome": "Quinta do Dragao",
+        "descricao": "Temaki Duplo Premium! 2 temakis grandes (salmao + philadelphia) por R$34,90. Fogo no paladar!",
+        "preco": "R$34,90",
+        "imagem": "quinta-dragao.png",
+    },
+    4: {  # Sexta
+        "nome": "Sexta Familia",
+        "descricao": "Combo Familia, 60 pecas pra reunir todo mundo! Sushi, hot roll e sashimi por R$54,90. Sexta e dia de japa!",
+        "preco": "R$54,90",
+        "imagem": "sexta-familia.png",
+    },
+    5: {  # Sabado
+        "nome": "Sabado Shogun",
+        "descricao": "Mega Combo Imperial, 80 pecas premium por R$69,90! O banquete do shogun pra um sabado da hora.",
+        "preco": "R$69,90",
+        "imagem": "sabado-shogun.png",
+    },
+    6: {  # Domingo
+        "nome": "Domingo Zen",
+        "descricao": "Festival de Sashimi! Fatias generosas de salmao, atum e peixe branco por R$44,90. Paz, sabor e frescor.",
+        "preco": "R$44,90",
+        "imagem": "domingo-zen.png",
+    },
+}
+
+
+@tool
+async def enviar_promo_do_dia(phone: str) -> str:
+    """Envia a promocao do dia para o cliente com imagem e detalhes.
+    Use quando o cliente perguntar sobre promocao, oferta do dia, ou desconto.
+    Tambem envie proativamente quando fizer sentido na conversa.
+
+    Args:
+        phone: Numero do cliente (ex: 558584551176)
+    """
+    dia = datetime.now().weekday()  # 0=Monday, 6=Sunday
+    promo = PROMOS_DO_DIA[dia]
+    image_url = f"{_PROMO_BASE_URL}/{promo['imagem']}"
+
+    try:
+        # Send the promo image
+        await stevo.send_media(phone, image_url, promo["nome"], "image")
+        logger.info(f"[HIRO→{phone}] [IMAGEM PROMO] {promo['nome']}")
+        return (
+            f"Imagem da promo enviada! Agora envie uma mensagem de texto com os detalhes:\n"
+            f"Promo: {promo['nome']}\n"
+            f"Descricao: {promo['descricao']}\n"
+            f"Preco: {promo['preco']}\n"
+            f"Valido somente hoje em todas as unidades."
+        )
+    except Exception as e:
+        logger.error(f"Erro ao enviar promo: {e}")
+        # Fallback: return promo info as text even if image fails
+        return (
+            f"Nao consegui enviar a imagem, mas aqui estao os detalhes da promo:\n"
+            f"Promo: {promo['nome']}\n"
+            f"Descricao: {promo['descricao']}\n"
+            f"Preco: {promo['preco']}\n"
+            f"Valido somente hoje em todas as unidades."
+        )
+
+
+@tool
+async def salvar_preferencia(contact_id: str, preferencia: str) -> str:
+    """Salva uma preferencia ou padrao de consumo do cliente no CRM.
+    Use quando descobrir algo sobre o cliente: unidade preferida, prato favorito,
+    dia que costuma pedir, preferencias especiais, etc.
+
+    Exemplos de preferencias:
+    - "Unidade preferida: Maraponga"
+    - "Gosta de hot roll e temaki"
+    - "Costuma pedir nas quartas"
+    - "Prefere pagar com PIX"
+    - "Pediu combo familia pra 6 pessoas"
+
+    Args:
+        contact_id: ID do contato no GHL
+        preferencia: Texto descrevendo a preferencia (ex: "Unidade preferida: Maraponga")
+    """
+    try:
+        nota = f"[HIRO PERFIL] {preferencia}"
+        await ghl.add_note(contact_id, nota)
+        logger.info(f"Preferencia salva para {contact_id}: {preferencia}")
+        return f"Preferencia salva: {preferencia}"
+    except Exception as e:
+        logger.error(f"Erro ao salvar preferencia: {e}")
+        return f"ERRO ao salvar preferencia: {e}"
+
+
 ALL_TOOLS = [
     enviar_mensagem,
     buscar_contato,
@@ -270,4 +381,6 @@ ALL_TOOLS = [
     consultar_pedido_por_telefone,
     transferir_humano,
     adicionar_nota,
+    salvar_preferencia,
+    enviar_promo_do_dia,
 ]

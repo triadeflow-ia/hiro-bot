@@ -1,8 +1,8 @@
-# Hiro Bot — Atendente IA do Sushi da Hora
+# Hiro Bot - Atendente IA do Sushi da Hora
 
 ## O que eh
 Bot de atendimento WhatsApp para o Sushi da Hora (5 unidades em Fortaleza).
-Baseado na arquitetura da MIA (Mwove Bot) — LangGraph ReAct + FastAPI + Stevo.
+Baseado na arquitetura da MIA (Mwove Bot) - LangGraph ReAct + FastAPI + Stevo.
 Modo DEMO com keyword activation (#hiro / #parar).
 
 ## Stack
@@ -25,8 +25,8 @@ Modo DEMO com keyword activation (#hiro / #parar).
 ## Como funciona (Demo Mode)
 1. Alguem manda `#hiro` para o numero 558584551176
 2. Bot ativa e responde como atendente do Sushi da Hora
-3. Conversa normalmente — responde sobre unidades, cardapio, horarios, pagamento
-4. Alguem manda `#parar` — bot desativa
+3. Conversa normalmente - responde sobre unidades, cardapio, horarios, pagamento
+4. Alguem manda `#parar` - bot desativa
 
 ## Estrutura
 ```
@@ -77,7 +77,7 @@ python scripts/setup-stevo-webhook.py https://URL/webhook/stevo
 - [x] Keyword activation (#hiro / #parar)
 - [x] Preprocessamento media (Whisper, Vision)
 - [x] Prompt Hiro completo (FAQ 5 unidades, fluxo atendimento)
-- [ ] OPENAI_API_KEY — precisa setar no .env
+- [ ] OPENAI_API_KEY - precisa setar no .env
 - [ ] Deploy Railway
 - [ ] Registrar webhook no Stevo
 - [ ] Testar fluxo completo

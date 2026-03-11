@@ -1,0 +1,57 @@
+============================================================
+  HIRO BOT - RELATÓRIO DE QA AUTOMATIZADO
+============================================================
+  Data: 2026-03-10 19:52
+  Cenários: 33 | Passou: 32 | Falhou: 1
+  Taxa de sucesso: 97%
+  Tempo total: 554.3s (16.8s por teste)
+
+────────────────────────────────────────────────────────────
+  NOTAS MÉDIAS (0-10)
+────────────────────────────────────────────────────────────
+  Precisão:     ████████░░ 8.0
+  Tom:          ████████░░ 9.0
+  Brevidade:    ███████░░░ 7.3
+  Tool Usage:   █████████░ 9.5
+  Regras:       █████████░ 9.1
+  GERAL:        ████████░░ 8.6
+
+────────────────────────────────────────────────────────────
+  POR CATEGORIA
+────────────────────────────────────────────────────────────
+  ✅ consulta_pedido      3/3 passou  (média: 8.8)
+  ✅ duvidas              3/3 passou  (média: 8.6)
+  ✅ edge_cases           3/3 passou  (média: 8.6)
+  ✅ fazer_pedido         3/3 passou  (média: 8.7)
+  ✅ fluxo                3/3 passou  (média: 8.7)
+  ✅ fora_escopo          3/3 passou  (média: 8.8)
+  ✅ reclamacao           3/3 passou  (média: 8.5)
+  ✅ saudacao             3/3 passou  (média: 8.7)
+  ✅ tom                  3/3 passou  (média: 8.5)
+  ⚠️ transferir           2/3 passou  (média: 7.9)
+  ✅ unidades             3/3 passou  (média: 8.6)
+
+────────────────────────────────────────────────────────────
+  FALHAS DETALHADAS
+────────────────────────────────────────────────────────────
+
+  ❌ humano-03 [transferir]
+     Msg: "não quero falar com robô"
+     Esperado: Transferir imediatamente sem insistir
+     Scores: ACC=8 TOM=9 BRV=7 TOOL=6 REG=9
+     🚩 Red flags: não transferiu imediatamente, apenas enviou mensagem
+     Nota: O bot respondeu de forma simpática e breve, mas não realizou a transferência para um atendente humano, apenas enviou uma mensagem. Deveria ter usado a ferramenta de transferência (transferir_humano) conforme esperado.
+     Bot disse: "beleza, já te passo pra um atendente aí do outro lado"
+
+────────────────────────────────────────────────────────────
+  🚩 RED FLAGS ENCONTRADAS
+────────────────────────────────────────────────────────────
+  • humano-03: não transferiu imediatamente, apenas enviou mensagem
+  • tom-01: como posso te ajudar hoje? (frase formal, poderia ser mais informal)
+
+────────────────────────────────────────────────────────────
+  💡 SUGESTÕES DE MELHORIA
+────────────────────────────────────────────────────────────
+  • O bot respondeu de forma simpática e breve, mas não realizou a transferência para um atendente humano, apenas enviou uma mensagem. Deveria ter usado a ferramenta de transferência (transferir_humano) conforme esperado.
+
+============================================================

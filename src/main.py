@@ -1,15 +1,19 @@
-"""Hiro Bot — Sushi da Hora WhatsApp AI Agent (LangGraph + FastAPI + Stevo)."""
+"""Hiro Bot, Sushi da Hora WhatsApp AI Agent (LangGraph + FastAPI + Stevo)."""
 
 from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src.config import settings
+from unittest.mock import AsyncMock, patch
+
 from src.integrations.stevo import parse_stevo_webhook, send_text
 from src.agent.graph import run_agent
 from src.agent.nodes import transcribe_audio, analyze_image
@@ -22,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Hiro Bot",
-    description="Atendente IA do Sushi da Hora — WhatsApp (LangGraph + Stevo)",
+    description="Atendente IA do Sushi da Hora, WhatsApp (LangGraph + Stevo)",
     version="1.0.0",
 )
 
@@ -32,6 +36,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static files (promo images + presentation page)
+_assets_dir = Path(__file__).parent.parent / "assets"
+if _assets_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(_assets_dir)), name="static")
+
+# Serve the presentation page
+_public_dir = Path(__file__).parent.parent / "public"
+if _public_dir.exists():
+    app.mount("/proposta", StaticFiles(directory=str(_public_dir), html=True), name="proposta")
 
 # ─── KEYWORD ACTIVATION SYSTEM ────────────────────────────
 # Tracks which phone numbers have the bot active
@@ -69,7 +83,7 @@ async def health():
         "status": "ok",
         "service": "hiro-bot",
         "version": "1.0.0",
-        "model": settings.openai_model,
+        "model": settings.anthropic_model if settings.anthropic_api_key else settings.openai_model,
         "active_sessions": len(_active_sessions),
         "keyword_activate": settings.keyword_activate,
         "keyword_deactivate": settings.keyword_deactivate,
@@ -85,9 +99,9 @@ async def list_sessions():
 @app.post("/webhook/stevo")
 async def stevo_webhook(request: Request):
     """Receive Stevo/WhatsApp webhook and process with LangGraph agent."""
-    if not settings.openai_api_key:
+    if not settings.openai_api_key and not settings.anthropic_api_key:
         return JSONResponse(
-            {"status": "error", "detail": "OPENAI_API_KEY not configured"},
+            {"status": "error", "detail": "No LLM API key configured"},
             status_code=503,
         )
 
@@ -163,7 +177,7 @@ async def stevo_webhook(request: Request):
 
     # If bot is not active for this phone, ignore
     if not is_active(phone):
-        logger.info(f"Bot inativo para {phone} — ignorando mensagem")
+        logger.info(f"Bot inativo para {phone}, ignorando mensagem")
         return JSONResponse({"status": "skipped", "reason": "bot not active for this phone"})
 
     # ─── MEDIA PREPROCESSING ──────────────────────────────
@@ -212,7 +226,7 @@ async def stevo_webhook(request: Request):
 
 @app.post("/webhook/test")
 async def test_webhook(request: Request):
-    """Test endpoint — simulates a message without Stevo."""
+    """Test endpoint that simulates a message without Stevo."""
     payload = await request.json()
     phone = payload.get("phone", "5500000000000")
     message = payload.get("message", "Oi")
@@ -247,6 +261,63 @@ async def deactivate_bot(phone: str):
     """Deactivate bot for a phone number via API."""
     deactivate(phone)
     return JSONResponse({"status": "deactivated", "phone": phone})
+
+
+# ─── LIVE CHAT API (for presentation page) ─────────────────
+
+@app.post("/api/chat")
+async def api_chat(request: Request):
+    """Live chat endpoint for the HTML presentation page.
+
+    Runs the agent in dry-run mode, captures messages instead of
+    sending them via WhatsApp. Returns captured messages as JSON.
+    """
+    payload = await request.json()
+    message = payload.get("message", "").strip()
+    name = payload.get("name", "Visitante")
+
+    if not message:
+        return JSONResponse({"messages": []})
+
+    if not settings.openai_api_key and not settings.anthropic_api_key:
+        return JSONResponse(
+            {"error": "No LLM API key configured"},
+            status_code=503,
+        )
+
+    # Capture all messages the agent sends via enviar_mensagem
+    captured: list[str] = []
+
+    async def fake_send(phone: str, text: str):
+        captured.append(text)
+        return {"status": "captured"}
+
+    async def fake_send_media(phone: str, media_url: str, caption: str = "", media_type: str = "image"):
+        captured.append(f"[IMAGEM: {media_url}]")
+        return {"status": "captured"}
+
+    try:
+        import src.agent.tools as _tools
+        _tools._skip_delays = True
+        try:
+            with patch("src.integrations.stevo.send_text", new=fake_send), \
+                 patch("src.integrations.stevo.send_media", new=fake_send_media):
+                result = await run_agent(
+                    phone="5500000000000",
+                    contact_name=name,
+                    text=message,
+                )
+        finally:
+            _tools._skip_delays = False
+
+        # Fallback: if agent responded directly without calling enviar_mensagem
+        if not captured and result and result not in ("Mensagem processada.", "Timeout ao processar mensagem."):
+            captured.append(result)
+
+        return JSONResponse({"messages": captured})
+    except Exception as e:
+        logger.error(f"Erro no /api/chat: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
 
 
 if __name__ == "__main__":

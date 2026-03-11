@@ -1,5 +1,5 @@
 """
-Hiro Bot — QA Automatizado com IA
+Hiro Bot - QA Automatizado com IA
 Simula centenas de clientes, avalia respostas, gera relatório e sugere melhorias.
 
 Uso:
@@ -397,7 +397,7 @@ SCENARIOS: list[Scenario] = [
         expected_tools=["enviar_mensagem"],
     ),
 
-    # ═══ EDGE CASES — TYPOS, GÍRIAS, MENSAGENS CURTAS ═══
+    # ═══ EDGE CASES - TYPOS, GÍRIAS, MENSAGENS CURTAS ═══
     Scenario(
         id="edge-01", category="edge_cases",
         message="cardapio",
@@ -448,7 +448,7 @@ SCENARIOS: list[Scenario] = [
         expected_tools=["enviar_mensagem"],
     ),
 
-    # ═══ FLUXO COMPLETO — MULTI-TURN SIMULATED ═══
+    # ═══ FLUXO COMPLETO - MULTI-TURN SIMULATED ═══
     Scenario(
         id="flow-01", category="fluxo",
         message="oi quero saber sobre meu pedido, ta demorando muito",
@@ -611,11 +611,11 @@ Avalie a resposta do bot "Hiro" (atendente do Sushi da Hora, rede de sushi deliv
 
 ## Avalie (0-10 cada):
 
-1. **accuracy** — Respondeu corretamente ao que foi perguntado? Seguiu o comportamento esperado?
-2. **tone** — Tom informal, simpático, breve? Sem linguagem robótica? Sem "senhor/senhora"?
-3. **brevity** — Mensagens curtas (max 3 frases por msg)? Não enrolou?
-4. **tool_usage** — Usou as tools certas? Consultou pedido antes de transferir quando deveria?
-5. **rule_compliance** — Seguiu as regras de ouro? (não inventou preço, perguntou unidade, etc)
+1. **accuracy** - Respondeu corretamente ao que foi perguntado? Seguiu o comportamento esperado?
+2. **tone** - Tom informal, simpático, breve? Sem linguagem robótica? Sem "senhor/senhora"?
+3. **brevity** - Mensagens curtas (max 3 frases por msg)? Não enrolou?
+4. **tool_usage** - Usou as tools certas? Consultou pedido antes de transferir quando deveria?
+5. **rule_compliance** - Seguiu as regras de ouro? (não inventou preço, perguntou unidade, etc)
 
 Responda APENAS em JSON válido (sem markdown, sem ```):
 {{
@@ -703,7 +703,7 @@ def generate_report(results: list[TestResult], elapsed: float) -> str:
 
     lines = [
         "=" * 60,
-        "  HIRO BOT — RELATÓRIO DE QA AUTOMATIZADO",
+        "  HIRO BOT - RELATÓRIO DE QA AUTOMATIZADO",
         "=" * 60,
         f"  Data: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
         f"  Cenários: {total} | Passou: {passed} | Falhou: {failed}",
@@ -785,7 +785,7 @@ def generate_report(results: list[TestResult], elapsed: float) -> str:
             lines.append(f"  • {r.evaluation_notes}")
 
     if not seen_notes:
-        lines.append("  Nenhuma sugestão — tudo passou! 🎉")
+        lines.append("  Nenhuma sugestão - tudo passou! 🎉")
 
     lines.append("")
     lines.append("=" * 60)
@@ -796,7 +796,7 @@ def generate_report(results: list[TestResult], elapsed: float) -> str:
 # ─── MAIN ────────────────────────────────────────────────────
 
 async def main():
-    parser = argparse.ArgumentParser(description="Hiro Bot — QA Automatizado")
+    parser = argparse.ArgumentParser(description="Hiro Bot - QA Automatizado")
     parser.add_argument("--category", "-c", help="Testar só uma categoria")
     parser.add_argument("--fast", action="store_true", help="Modo rápido: 3 testes por categoria")
     parser.add_argument("--id", help="Rodar um cenário específico por ID")
@@ -832,7 +832,7 @@ async def main():
 
     total = len(scenarios)
     cats = sorted(set(s.category for s in scenarios))
-    print(f"\n🍣 HIRO QA — {total} cenários em {len(cats)} categorias")
+    print(f"\n🍣 HIRO QA - {total} cenários em {len(cats)} categorias")
     print(f"   Categorias: {', '.join(cats)}")
     print()
 

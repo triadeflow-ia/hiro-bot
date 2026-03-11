@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta Comercial | Sushi da Hora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #DB0C14;
+      --primary-dim: rgba(219, 12, 20, 0.08);
+      --bg: #080404;
+      --bg-elevated: #110909;
+      --bg-card: #0e0808;
+      --white: #ffffff;
+      --gray-100: rgba(255,255,255,0.95);
+      --gray-300: rgba(255,255,255,0.7);
+      --gray-500: rgba(255,255,255,0.5);
+      --gray-700: rgba(255,255,255,0.15);
+      --gray-900: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.06);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === DOT GRID PATTERN === */
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(219,12,20,0.07) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .dot-grid-subtle {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === KANJI DECORATIVE === */
+    .kanji-fixed {
+      position: absolute;
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      color: rgba(219, 12, 20, 0.03);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      line-height: 1;
+    }
+
+    .kanji-vertical {
+      position: absolute;
+      writing-mode: vertical-rl;
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.6rem;
+      color: rgba(219, 12, 20, 0.06);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
+    /* === VERTICAL SIDEBAR === */
+    .v-sidebar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 52px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    .v-sidebar-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      color: var(--gray-500);
+      white-space: nowrap;
+    }
+
+    /* === HANKO SEAL === */
+    .hanko {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 2px solid var(--primary);
+      border-radius: 2px;
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: var(--primary);
+      transform: rotate(-6deg);
+      line-height: 1.1;
+      text-align: center;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hanko::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border: 0.5px solid rgba(219, 12, 20, 0.25);
+      border-radius: 1px;
+    }
+
+    /* === NAV === */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(8, 4, 4, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav .logo .logo-jp {
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    nav .logo .logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(219, 12, 20, 0.3);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    nav ul li a {
+      color: var(--gray-500);
+      text-decoration: none;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover { color: var(--primary); }
+
+    /* === HERO - SPLIT LAYOUT === */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 5rem 5rem 6rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.6);
+    }
+
+    /* Gradient overlay: left-to-right fade into dark bg */
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--bg) 0%, rgba(8,4,4,0.4) 20%, transparent 45%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-right .dot-grid {
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-badge .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      margin-bottom: 2rem;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 .accent { color: var(--primary); }
+    .hero h1 .thin { font-weight: 300; opacity: 0.7; }
+
+    .hero-sub {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      padding-left: 1.5rem;
+      border-left: 2px solid rgba(219,12,20,0.3);
+    }
+
+    .hero-sub span {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--gray-300);
+    }
+
+    .hero-sub span strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 1rem;
+    }
+
+    .hero-stats .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-stats .stat-number .red { color: var(--primary); }
+
+    .hero-stats .stat-label {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .hero-scroll {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--gray-500);
+      font-weight: 600;
+      margin-top: 2.5rem;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .hero-scroll:hover { color: var(--white); }
+
+    .hero-scroll .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: var(--primary);
+    }
+
+    /* === SECTION HEADERS (EDITORIAL) === */
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+      animation: rec-pulse 1.2s infinite;
+    }
+
+    .live-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      animation: rec-ring 1.2s infinite;
+    }
+
+    @keyframes rec-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 12px rgba(219,12,20,0.8); }
+      50% { opacity: 0.5; box-shadow: 0 0 4px rgba(219,12,20,0.3); }
+    }
+
+    @keyframes rec-ring {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .section-subtitle {
+      font-size: 1.15rem;
+      color: var(--gray-300);
+      max-width: 650px;
+      font-weight: 400;
+      margin-bottom: 3.5rem;
+      line-height: 1.8;
+    }
+
+    /* === FULL-WIDTH SECTIONS === */
+    .full-section {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .full-section .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* === SECTION DIVIDERS === */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+      height: 60px;
+      position: relative;
+    }
+
+    .section-divider-icon {
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: var(--primary);
+      opacity: 0.4;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(219, 12, 20, 0.2);
+      border-radius: 2px;
+      background: var(--bg);
+    }
+
+    /* === PROBLEM CARDS - HOVER TO RED === */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 2.5rem;
+    }
+
+    .problem-card {
+      background: var(--bg-card);
+      padding: 2.5rem;
+      transition: all 0.4s ease;
+      position: relative;
+      cursor: default;
+    }
+
+    .problem-card:hover {
+      background: var(--primary);
+    }
+
+    .problem-card:hover h3,
+    .problem-card:hover p {
+      color: var(--white);
+    }
+
+    .problem-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      transition: color 0.4s;
+    }
+
+    .problem-card p {
+      font-size: 1.05rem;
+      color: var(--gray-300);
+      line-height: 1.7;
+      transition: color 0.4s;
+    }
+
+    .problem-card-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      transition: color 0.4s;
+      opacity: 0.6;
+    }
+
+    .problem-card:hover .problem-card-num {
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* === SPLIT SECTION (SOLUTION) === */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 500px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .split-left {
+      padding: 5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .split-right {
+      position: relative;
+      overflow: hidden;
+      border-left: 1px solid var(--border);
+    }
+
+    .split-right img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.45);
+    }
+
+    /* === SOLUTION GRID - 4 COLUMNS WITH HOVER === */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .solution-card {
+      background: var(--bg-elevated);
+      padding: 2.5rem 2.5rem;
+      transition: all 0.35s ease;
+      position: relative;
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+    }
+
+    .solution-card:hover {
+      border-left-color: var(--primary);
+      background: rgba(219, 12, 20, 0.04);
+    }
+
+    .solution-number {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .solution-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .solution-card p {
+      font-size: 1.05rem;
+      color: var(--gray-300);
+      line-height: 1.75;
+      margin-bottom: 0.25rem;
+    }
+
+    .solution-features {
+      margin-top: 1.25rem;
+      list-style: none;
+    }
+
+    .solution-features li {
+      font-size: 1rem;
+      color: var(--gray-100);
+      padding: 0.4rem 0 0.4rem 1.2rem;
+      position: relative;
+    }
+
+    .solution-features li::before {
+      content: '+';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    /* === iPHONE 16 PRO MAX MOCKUP === */
+    .phone-mockup {
+      width: 393px;
+      margin: 3rem auto 0;
+      background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%);
+      border-radius: 55px;
+      padding: 6px;
+      position: relative;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 0 0 1px #0a0a0a,
+        0 0 0 3px #2d2d2d,
+        0 0 0 4px #0a0a0a,
+        0 50px 100px rgba(0,0,0,0.7),
+        0 0 80px rgba(219, 12, 20, 0.06);
+    }
+
+    /* Titanium side buttons */
+    .phone-mockup::before {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 160px;
+      width: 4px;
+      height: 70px;
+      background: linear-gradient(180deg, #3a3a3a, #222, #3a3a3a);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .phone-mockup::after {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 130px;
+      width: 4px;
+      height: 35px;
+      background: linear-gradient(180deg, #3a3a3a, #222, #3a3a3a);
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 55px 0 0 #2d2d2d, 0 55px 0 0 #2d2d2d;
+    }
+
+    .phone-screen {
+      border-radius: 50px;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+
+    /* Dynamic Island */
+    .phone-dynamic-island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 36px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 20;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .phone-dynamic-island::before {
+      content: '';
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #111 40%, #0a0a0a 60%);
+      border-radius: 50%;
+      box-shadow: inset 0 0 2px rgba(255,255,255,0.05);
+    }
+
+    /* Status bar */
+    .phone-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 16px 28px 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      background: #1f2c34;
+      position: relative;
+      z-index: 5;
+      min-height: 54px;
+    }
+
+    .phone-statusbar-left {
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    .phone-statusbar-icons {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .phone-statusbar-icons svg {
+      width: 15px;
+      height: 15px;
+      fill: #fff;
+    }
+
+    /* WhatsApp header */
+    .wa-header {
+      background: #1f2c34;
+      padding: 0.5rem 0.75rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .wa-back {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .wa-back svg {
+      width: 22px;
+      height: 22px;
+      fill: #00a884;
+    }
+
+    .wa-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans JP', serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .wa-contact-info { flex: 1; min-width: 0; }
+    .wa-name { font-weight: 600; font-size: 0.9rem; color: #e9edef; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wa-status-text { font-size: 0.65rem; color: #8696a0; }
+
+    .wa-header-icons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .wa-header-icons svg {
+      width: 20px;
+      height: 20px;
+      fill: #aebac1;
+    }
+
+    /* Chat body - WhatsApp Dark */
+    .wa-body {
+      padding: 0.6rem;
+      min-height: 440px;
+      max-height: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      background: #0b141a;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M40 15 a8 8 0 1 1 0 16 a8 8 0 1 1 0 -16'/%3E%3Cpath d='M120 50 l8 14h-16z'/%3E%3Crect x='210' y='30' width='12' height='12' rx='2'/%3E%3Cpath d='M300 20 a6 6 0 1 1 0 12 a6 6 0 1 1 0 -12'/%3E%3Cpath d='M60 100 l6 10h-12z'/%3E%3Crect x='160' y='90' width='10' height='10' rx='1'/%3E%3Cpath d='M260 85 a7 7 0 1 1 0 14 a7 7 0 1 1 0 -14'/%3E%3Cpath d='M350 95 l7 12h-14z'/%3E%3Cpath d='M30 180 a5 5 0 1 1 0 10 a5 5 0 1 1 0 -10'/%3E%3Crect x='100' y='170' width='11' height='11' rx='2'/%3E%3Cpath d='M200 165 l9 15h-18z'/%3E%3Cpath d='M320 175 a8 8 0 1 1 0 16 a8 8 0 1 1 0 -16'/%3E%3Crect x='50' y='260' width='9' height='9' rx='1'/%3E%3Cpath d='M140 250 a6 6 0 1 1 0 12 a6 6 0 1 1 0 -12'/%3E%3Cpath d='M240 255 l7 12h-14z'/%3E%3Crect x='340' y='245' width='12' height='12' rx='2'/%3E%3Cpath d='M80 340 l8 14h-16z'/%3E%3Cpath d='M180 330 a7 7 0 1 1 0 14 a7 7 0 1 1 0 -14'/%3E%3Crect x='280' y='335' width='10' height='10' rx='1'/%3E%3Cpath d='M370 345 a5 5 0 1 1 0 10 a5 5 0 1 1 0 -10'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Today pill */
+    .wa-today {
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+
+    .wa-today span {
+      display: inline-block;
+      background: #182229;
+      color: #8696a0;
+      font-size: 0.65rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 500;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    }
+
+    .msg {
+      max-width: 82%;
+      padding: 0.45rem 0.55rem 0.2rem;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      animation: fadeInUp 0.3s ease-out both;
+      position: relative;
+      border-radius: 8px;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+    }
+
+    .msg-time {
+      display: inline;
+      float: right;
+      font-size: 0.55rem;
+      color: rgba(255,255,255,0.35);
+      margin-left: 8px;
+      margin-top: 4px;
+      line-height: 2;
+    }
+
+    .msg-bot {
+      background: #202c33;
+      align-self: flex-start;
+      border-top-left-radius: 0;
+      color: #e9edef;
+    }
+
+    .msg-bot:first-of-type {
+      margin-top: 0.25rem;
+    }
+
+    .msg-user {
+      background: #005c4b;
+      align-self: flex-end;
+      border-top-right-radius: 0;
+      color: #e9edef;
+    }
+
+    /* WhatsApp input bar */
+    .wa-input-area {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.4rem 0.5rem;
+      background: #1f2c34;
+      align-items: center;
+    }
+
+    .wa-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #2a3942;
+      border-radius: 22px;
+      padding: 0 0.5rem 0 0.75rem;
+      gap: 0.25rem;
+    }
+
+    .wa-input-emoji {
+      color: #8696a0;
+      font-size: 1.2rem;
+      cursor: default;
+      flex-shrink: 0;
+    }
+
+    .wa-input-wrap input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.55rem 0.25rem;
+      color: #e9edef;
+      font-size: 0.85rem;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+    }
+
+    .wa-input-wrap input::placeholder { color: #8696a0; }
+
+    .wa-input-attach {
+      color: #8696a0;
+      font-size: 1.1rem;
+      cursor: default;
+      flex-shrink: 0;
+      transform: rotate(45deg);
+    }
+
+    .wa-input-camera {
+      color: #8696a0;
+      font-size: 1rem;
+      cursor: default;
+      flex-shrink: 0;
+    }
+
+    .wa-send-btn {
+      background: #00a884;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .wa-send-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    .wa-send-btn:hover { background: #00c49a; }
+    .wa-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Home indicator */
+    .phone-home-bar {
+      height: 30px;
+      background: #1f2c34;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 8px;
+    }
+
+    .phone-home-bar span {
+      width: 134px;
+      height: 5px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 100px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 0.5rem 0.55rem;
+      align-self: flex-start;
+      background: #202c33;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+    }
+
+    .typing-indicator span {
+      width: 6px; height: 6px;
+      background: #8696a0;
+      border-radius: 50%;
+      animation: typing-bounce 1.2s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) {
+      .phone-mockup {
+        width: 100%;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+      .phone-mockup::before,
+      .phone-mockup::after { display: none; }
+      .phone-screen { border-radius: 0; }
+      .phone-dynamic-island { display: none; }
+      .phone-home-bar span { background: rgba(255,255,255,0.15); }
+    }
+    }
+
+    /* === PROMOS === */
+    .promos-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--border);
+      max-width: 700px;
+      margin: 3rem auto 0;
+    }
+
+    .promo-card {
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .promo-card:hover { background: rgba(219, 12, 20, 0.04); }
+
+    .promo-card img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85);
+      transition: filter 0.3s;
+    }
+
+    .promo-card:hover img { filter: brightness(1); }
+
+    .promo-card-body { padding: 0.7rem 0.9rem 0.9rem; }
+
+    .promo-card-day {
+      font-size: 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .promo-card-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin: 0.25rem 0;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .promo-card-desc {
+      font-size: 0.7rem;
+      color: var(--gray-300);
+      line-height: 1.5;
+    }
+
+    .promo-card-price {
+      display: inline-block;
+      margin-top: 0.65rem;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.65rem;
+    }
+
+    .promo-hint {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 1.1rem;
+      color: var(--gray-300);
+    }
+
+    .promo-hint span { color: var(--primary); font-weight: 700; }
+
+    /* === METRICS - POSTER STYLE === */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 3rem;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      transition: all 0.4s;
+    }
+
+    .metric-card:hover { background: var(--primary); }
+
+    .metric-card:hover .metric-value,
+    .metric-card:hover .metric-label,
+    .metric-card:hover .metric-desc {
+      color: var(--white);
+    }
+
+    .metric-value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      transition: color 0.4s;
+    }
+
+    .metric-value .red { color: var(--primary); }
+    .metric-card:hover .metric-value .red { color: var(--white); }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--gray-300);
+      margin-top: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+      transition: color 0.4s;
+    }
+
+    .metric-desc {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+      transition: color 0.4s;
+    }
+
+    /* === PACKAGE - BORDERED FRAME === */
+    .package-box {
+      border: 1px solid var(--border);
+      max-width: 950px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .package-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--primary);
+    }
+
+    .package-header {
+      text-align: center;
+      padding: 3rem 3rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .package-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .package-name .accent { color: var(--primary); }
+
+    .package-tagline {
+      color: var(--gray-500);
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .package-modules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .module {
+      padding: 2rem 2.5rem;
+      background: var(--bg);
+      transition: all 0.3s;
+    }
+
+    .module:hover { background: rgba(219, 12, 20, 0.02); }
+
+    .module h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .module ul { list-style: none; }
+
+    .module ul li {
+      font-size: 1rem;
+      color: var(--gray-300);
+      padding: 0.3rem 0 0.3rem 1rem;
+      position: relative;
+    }
+
+    .module ul li::before {
+      content: '+';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* === ROADMAP === */
+    .roadmap {
+      position: relative;
+      max-width: 900px;
+      margin: 4rem auto 0;
+      padding: 2rem 0;
+    }
+
+    /* Central glowing line */
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, transparent, var(--primary) 10%, var(--primary) 90%, transparent);
+      box-shadow: 0 0 15px rgba(219,12,20,0.4), 0 0 40px rgba(219,12,20,0.15);
+    }
+
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+
+    /* Left side: number + stage + title */
+    .roadmap-left {
+      text-align: right;
+      padding-right: 2.5rem;
+    }
+
+    .roadmap-left-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.06);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .roadmap-left-stage {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 0.3rem;
+    }
+
+    .roadmap-left-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    /* Center: glowing dot */
+    .roadmap-dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 20px rgba(219,12,20,0.3), 0 0 40px rgba(219,12,20,0.1);
+    }
+
+    .roadmap-dot-inner {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px rgba(219,12,20,0.6);
+    }
+
+    /* Horizontal connector line from dot to content */
+    .roadmap-dot::after {
+      content: '';
+      position: absolute;
+      right: -2.5rem;
+      top: 50%;
+      width: 2rem;
+      height: 1px;
+      background: linear-gradient(to right, rgba(219,12,20,0.4), rgba(219,12,20,0.08));
+    }
+
+    /* Right side: content */
+    .roadmap-content {
+      padding-left: 2.5rem;
+    }
+
+    .roadmap-content p {
+      font-size: 1rem;
+      color: var(--gray-300);
+      line-height: 1.7;
+      max-width: 350px;
+    }
+
+    .roadmap-tag {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      background: var(--primary-dim);
+      border: 1px solid rgba(219, 12, 20, 0.12);
+      color: var(--primary);
+      padding: 0.25rem 0.8rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Infinity item special */
+    .roadmap-item.roadmap-infinity .roadmap-dot {
+      border-color: var(--primary);
+      box-shadow: 0 0 25px rgba(219,12,20,0.5), 0 0 60px rgba(219,12,20,0.15);
+    }
+
+    .roadmap-item.roadmap-infinity .roadmap-dot-inner {
+      width: 0;
+      height: 0;
+    }
+
+    .roadmap-item.roadmap-infinity .roadmap-dot::before {
+      content: '\221E';
+      font-size: 1.5rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .roadmap::before { left: 24px; }
+      .roadmap-item {
+        grid-template-columns: auto 1fr;
+        gap: 0;
+      }
+      .roadmap-left { display: none; }
+      .roadmap-dot { width: 40px; height: 40px; }
+      .roadmap-dot::after { right: -1.5rem; width: 1rem; }
+      .roadmap-content { padding-left: 1.5rem; }
+      .roadmap-content p { max-width: 100%; }
+    }
+
+    /* === CTA === */
+    .cta {
+      text-align: center;
+      padding: 10rem 2rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(219, 12, 20, 0.06) 0%, transparent 60%);
+    }
+
+    .cta-content { position: relative; z-index: 1; }
+
+    .cta h2 {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .cta p {
+      font-size: 1rem;
+      color: var(--gray-300);
+      margin-bottom: 3rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.8;
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(219, 12, 20, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--border);
+      margin-left: 1rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p { font-size: 0.8rem; color: var(--gray-300); }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 700; transition: opacity 0.2s; }
+    footer a:hover { opacity: 0.8; }
+
+    /* === CONFIDENTIAL BAR === */
+    .confidential {
+      text-align: center;
+      padding: 0.5rem;
+      background: rgba(219, 12, 20, 0.03);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.5rem;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      font-weight: 700;
+      margin-top: 55px;
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Roadmap staggered reveal */
+    .roadmap-item.fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .roadmap-item.fade-in .roadmap-dot {
+      transform: scale(0);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+    }
+
+    .roadmap-item.fade-in .roadmap-content {
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.5s ease-out 0.4s, transform 0.5s ease-out 0.4s;
+    }
+
+    .roadmap-item.fade-in .roadmap-left {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
+    }
+
+    .roadmap-item.fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .roadmap-item.fade-in.visible .roadmap-dot {
+      transform: scale(1);
+    }
+
+    .roadmap-item.fade-in.visible .roadmap-content {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .roadmap-item.fade-in.visible .roadmap-left {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Stagger delays per item */
+    .roadmap-item:nth-child(1) { transition-delay: 0s; }
+    .roadmap-item:nth-child(2) { transition-delay: 0.15s; }
+    .roadmap-item:nth-child(3) { transition-delay: 0.3s; }
+    .roadmap-item:nth-child(4) { transition-delay: 0.45s; }
+    .roadmap-item:nth-child(5) { transition-delay: 0.6s; }
+
+    /* Glowing line grows */
+    .roadmap::before {
+      clip-path: inset(100% 0 0 0);
+      transition: clip-path 1.5s ease-out;
+    }
+
+    .roadmap.line-visible::before {
+      clip-path: inset(0 0 0 0);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { min-height: 50vh; }
+      .hero-left { padding: 8rem 3rem 4rem; }
+      .split-section { grid-template-columns: 1fr; }
+      .split-right { min-height: 40vh; }
+      .solution-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      .hero-left { padding: 7rem 2rem 3rem; }
+      .hero-stats { flex-direction: column; gap: 1.5rem; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .solution-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .package-modules { grid-template-columns: 1fr; }
+      .btn-outline { margin-left: 0; margin-top: 1rem; display: block; }
+      .v-sidebar { display: none; }
+      .kanji-fixed, .kanji-vertical { display: none; }
+      .full-section .inner { padding: 5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      SUSHI DA HORA
+    </div>
+    <ul>
+      <li><a href="#problema">Problema</a></li>
+      <li><a href="#solucao">Solucao</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#pacote">Pacote</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <div class="confidential">Proposta Comercial Confidencial</div>
+
+  <!-- HERO - SPLIT -->
+  <section class="hero">
+    <div class="v-sidebar">
+      <span class="v-sidebar-text">Sushi da Hora / Fortaleza CE / 5 Unidades</span>
+    </div>
+    <div class="hero-left">
+      <div class="hero-badge"><span class="pulse"></span> Proposta Exclusiva</div>
+      <h1>
+        <span class="thin">Sushi da Hora</span><br>
+        <span class="accent">Atendimento</span><br>
+        Inteligente
+      </h1>
+      <div class="hero-sub">
+        <span><strong>24/7</strong> Atendimento sem pausa</span>
+        <span><strong>5 unidades</strong> IA treinada em cada uma</span>
+        <span><strong>Zero</strong> clientes perdidos</span>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">80K<span class="red">+</span></div>
+          <div class="stat-label">Seguidores</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Unidades</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">24<span class="red">/</span>7</div>
+          <div class="stat-label">Online</div>
+        </div>
+      </div>
+      <a href="#problema" class="hero-scroll">
+        <span class="scroll-line"></span> Scroll down
+      </a>
+    </div>
+    <div class="hero-right">
+      <img src="/static/fachada.jpg" alt="Fachada Sushi da Hora">
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- PROBLEMA -->
+  <div class="full-section" id="problema">
+    <div class="dot-grid-subtle"></div>
+
+
+    <div class="inner">
+      <div class="section-label fade-in">O Desafio</div>
+      <h2 class="section-title fade-in">O que esta custando caro<br>sem voce perceber</h2>
+      <p class="section-subtitle fade-in">Cada mensagem nao respondida e um pedido perdido. Cada demora e um cliente que vai pro concorrente.</p>
+      <div class="problem-grid">
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">01</div>
+          <h3>Horario limitado, demanda ilimitada</h3>
+          <p>Das 17h as 23h sao 6 horas. Seu cliente quer pedir as 15h e nao consegue. Cada mensagem sem resposta = pedido perdido.</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">02</div>
+          <h3>5 WhatsApps, 5 problemas</h3>
+          <p>5 unidades = 5 numeros diferentes. Cliente manda pro numero errado, fica sem resposta, desiste.</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">03</div>
+          <h3>Perguntas repetitivas consomem tempo</h3>
+          <p>"Qual o horario?", "Fazem delivery?", "Aceitam PIX?". Sua equipe responde as mesmas perguntas 50x por dia.</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">04</div>
+          <h3>Zero visibilidade dos dados</h3>
+          <p>Quantos leads chegam por dia? Quantos desistem? Qual unidade converte mais? Sem CRM, voce gerencia no escuro.</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">05</div>
+          <h3>80K seguidores, conversao manual</h3>
+          <p>Voce construiu uma audiencia enorme no Instagram. Mas quando o seguidor manda DM, quem responde? E em quanto tempo?</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-card-num">06</div>
+          <h3>Concorrencia se automatizando</h3>
+          <p>Restaurantes ja estao usando IA para atender clientes instantaneamente. Quem demora mais perde a corrida.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- SOLUCAO - SPLIT INTRO -->
+  <div class="split-section" id="solucao">
+    <div class="split-left">
+      <div class="section-label fade-in">A Solucao</div>
+      <h2 class="section-title fade-in">Hiro, Seu atendente<br>que nunca dorme</h2>
+      <p class="section-subtitle fade-in" style="margin-bottom:0;">IA treinada especificamente pro Sushi da Hora. Conhece cada unidade, cada cardapio, cada detalhe. 4 modulos integrados para automatizar todo o atendimento.</p>
+    </div>
+    <div class="split-right">
+      <img src="/static/promos/domingo-zen.png" alt="Sashimi premium">
+      <div class="dot-grid"></div>
+    </div>
+  </div>
+
+  <!-- SOLUCAO - 4 MODULOS -->
+  <div class="full-section" style="border-bottom:1px solid var(--border);">
+    <div class="inner">
+      <div class="solution-grid">
+        <div class="solution-card fade-in">
+          <div class="solution-number">Modulo 01</div>
+          <h3>Atendimento Inteligente</h3>
+          <p>Atendente virtual com personalidade propria, treinado com dados das 5 unidades do Sushi da Hora.</p>
+          <ul class="solution-features">
+            <li>Atendimento instantaneo WhatsApp e Instagram</li>
+            <li>Direciona pro cardapio digital correto</li>
+            <li>Responde FAQ automaticamente</li>
+            <li>Transfere pra humano quando necessario</li>
+            <li>Funciona 24/7, sem folga</li>
+          </ul>
+        </div>
+        <div class="solution-card fade-in">
+          <div class="solution-number">Modulo 02</div>
+          <h3>CRM Inteligente</h3>
+          <p>Todos os contatos organizados, rastreados e segmentados automaticamente num unico lugar.</p>
+          <ul class="solution-features">
+            <li>Base centralizada das 5 unidades</li>
+            <li>Pipeline de atendimento visual</li>
+            <li>Tags automaticas por unidade e interesse</li>
+            <li>Historico completo de conversas</li>
+            <li>Segmentacao por comportamento</li>
+          </ul>
+        </div>
+        <div class="solution-card fade-in">
+          <div class="solution-number">Modulo 03</div>
+          <h3>Automacoes</h3>
+          <p>Fluxos automaticos que trabalham enquanto voce descansa. Nenhum lead esquecido.</p>
+          <ul class="solution-features">
+            <li>Follow-up automatico de leads</li>
+            <li>Recuperacao de clientes inativos</li>
+            <li>Mensagens de aniversario e datas especiais</li>
+            <li>Notificacao de promocoes por unidade</li>
+            <li>Pesquisa de satisfacao pos-pedido</li>
+          </ul>
+        </div>
+        <div class="solution-card fade-in">
+          <div class="solution-number">Modulo 04</div>
+          <h3>Dashboard & Relatorios</h3>
+          <p>Visao completa do desempenho de atendimento e vendas em tempo real.</p>
+          <ul class="solution-features">
+            <li>Leads por unidade em tempo real</li>
+            <li>Taxa de conversao por canal</li>
+            <li>Tempo medio de resposta</li>
+            <li>Comparativo entre unidades</li>
+            <li>Relatorios semanais automaticos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- PROMOCOES DO DIA -->
+  <div class="full-section" id="promos">
+    <div class="dot-grid-subtle"></div>
+    <div class="inner" style="text-align:center;">
+      <div class="section-label fade-in">7 Dias, 7 Promocoes</div>
+      <h2 class="section-title fade-in" style="text-align:center;">Promocao do Dia Automatica</h2>
+      <p class="section-subtitle fade-in" style="margin-left:auto;margin-right:auto;text-align:center;">Cada dia da semana tem uma oferta tematica. O Hiro sabe qual e e envia a arte + detalhes automaticamente quando o cliente pergunta.</p>
+      <div class="promos-grid">
+        <div class="promo-card fade-in">
+          <img src="/static/promos/segunda-samurai.png" alt="Segunda Samurai">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Segunda-feira</div>
+            <div class="promo-card-name">Segunda Samurai</div>
+            <div class="promo-card-desc">30 pecas sortidas: nigiri, uramaki e hosomaki</div>
+            <div class="promo-card-price">R$29,90</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/terca-crocante.png" alt="Terca Crocante">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Terca-feira</div>
+            <div class="promo-card-name">Terca Crocante</div>
+            <div class="promo-card-desc">10 hot rolls crocantes dourados</div>
+            <div class="promo-card-price">R$19,90</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/quarta-maluca.png" alt="Quarta Maluca">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Quarta-feira</div>
+            <div class="promo-card-name">Quarta Maluca</div>
+            <div class="promo-card-desc">40 pecas variadas, mix insano de sabores</div>
+            <div class="promo-card-price">R$38,00</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/quinta-dragao.png" alt="Quinta do Dragao">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Quinta-feira</div>
+            <div class="promo-card-name">Quinta do Dragao</div>
+            <div class="promo-card-desc">2 temakis premium, salmao + philadelphia</div>
+            <div class="promo-card-price">R$34,90</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/sexta-familia.png" alt="Sexta Familia">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Sexta-feira</div>
+            <div class="promo-card-name">Sexta Familia</div>
+            <div class="promo-card-desc">60 pecas pra reunir todo mundo</div>
+            <div class="promo-card-price">R$54,90</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/sabado-shogun.png" alt="Sabado Shogun">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Sabado</div>
+            <div class="promo-card-name">Sabado Shogun</div>
+            <div class="promo-card-desc">80 pecas imperial, o banquete do shogun</div>
+            <div class="promo-card-price">R$69,90</div>
+          </div>
+        </div>
+        <div class="promo-card fade-in">
+          <img src="/static/promos/domingo-zen.png" alt="Domingo Zen">
+          <div class="promo-card-body">
+            <div class="promo-card-day">Domingo</div>
+            <div class="promo-card-name">Domingo Zen</div>
+            <div class="promo-card-desc">Festival de sashimi, paz, sabor e frescor</div>
+            <div class="promo-card-price">R$44,90</div>
+          </div>
+        </div>
+      </div>
+      <p class="promo-hint fade-in">O Hiro envia a <span>arte + detalhes</span> automaticamente quando o cliente pergunta "qual a promo de hoje?"</p>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- LIVE CHAT -->
+  <div class="full-section" id="demo">
+    <div class="inner" style="text-align:center;">
+      <div class="section-label fade-in"><span class="live-dot"></span> Teste Agora, Ao Vivo</div>
+      <h2 class="section-title fade-in" style="text-align:center;">Converse com o Hiro</h2>
+      <p class="section-subtitle fade-in" style="margin-left:auto;margin-right:auto;text-align:center;">Isso nao e simulacao. E o Hiro de verdade, rodando com IA. Pergunte qualquer coisa sobre o Sushi da Hora.</p>
+
+      <!-- iPHONE 16 PRO MAX MOCKUP -->
+      <div class="phone-mockup fade-in">
+        <div class="phone-screen">
+          <div class="phone-dynamic-island"></div>
+
+          <!-- Status bar -->
+          <div class="phone-statusbar">
+            <div class="phone-statusbar-left">9:41</div>
+            <div class="phone-statusbar-icons">
+              <!-- Signal -->
+              <svg viewBox="0 0 18 12"><rect x="0" y="9" width="3" height="3" rx="0.5" fill="#fff"/><rect x="5" y="6" width="3" height="6" rx="0.5" fill="#fff"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#fff"/></svg>
+              <!-- WiFi -->
+              <svg viewBox="0 0 16 12"><path d="M8 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3.5-2.8a5 5 0 0 1 7 0l-1 1.1a3.5 3.5 0 0 0-5 0l-1-1.1zm-2.5-2.5a8 8 0 0 1 12 0l-1 1.1a6.5 6.5 0 0 0-10 0l-1-1.1z" fill="#fff"/></svg>
+              <!-- Battery -->
+              <svg viewBox="0 0 28 13"><rect x="0" y="0" width="24" height="12" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="2" y="2" width="19" height="8" rx="1" fill="#fff"/><path d="M26 4v4a2 2 0 0 0 0-4z" fill="#fff" opacity="0.5"/></svg>
+            </div>
+          </div>
+
+          <!-- WhatsApp header -->
+          <div class="wa-header">
+            <div class="wa-back">
+              <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="wa-avatar"><img src="/static/logo-sushi-da-hora.png" alt="Sushi da Hora" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+            <div class="wa-contact-info">
+              <div class="wa-name">Hiro | Sushi da Hora</div>
+              <div class="wa-status-text" id="chat-status">online</div>
+            </div>
+            <div class="wa-header-icons">
+              <!-- Video call -->
+              <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+              <!-- Phone -->
+              <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              <!-- More -->
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+            </div>
+          </div>
+
+          <!-- Chat body -->
+          <div class="wa-body" id="chat-body">
+            <div class="wa-today"><span>HOJE</span></div>
+            <div class="msg msg-bot">oi! eu sou o Hiro, do Sushi da Hora <span class="msg-time">9:41</span></div>
+            <div class="msg msg-bot">manda sua pergunta ai que te ajudo! <span class="msg-time">9:41</span></div>
+          </div>
+
+          <!-- WhatsApp input -->
+          <div class="wa-input-area">
+            <div class="wa-input-wrap">
+              <span class="wa-input-emoji">&#9786;</span>
+              <input type="text" id="chat-input" placeholder="Mensagem" autocomplete="off">
+              <span class="wa-input-attach">&#128206;</span>
+              <span class="wa-input-camera">&#128247;</span>
+            </div>
+            <button class="wa-send-btn" id="chat-send" title="Enviar">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+          </div>
+
+          <!-- Home bar -->
+          <div class="phone-home-bar"><span></span></div>
+        </div>
+      </div>
+
+      <p style="text-align:center;margin-top:2rem;" class="fade-in">
+        <a href="https://wa.me/558584551176?text=%23hiro" target="_blank" class="btn btn-primary">Testar no WhatsApp Real</a>
+      </p>
+      <p style="text-align:center;margin-top:0.5rem;font-size:0.6rem;color:var(--gray-500);letter-spacing:2px;text-transform:uppercase;">Abre direto no WhatsApp, manda #hiro pra ativar</p>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- METRICAS -->
+  <div class="full-section">
+    <div class="inner" style="text-align:center;">
+      <div class="section-label fade-in">Impacto Esperado</div>
+      <h2 class="section-title fade-in" style="text-align:center;">Numeros que falam sozinhos</h2>
+      <div class="metrics-grid">
+        <div class="metric-card fade-in">
+          <div class="metric-value"><span class="red">90%</span></div>
+          <div class="metric-label">Reducao tempo de resposta</div>
+          <div class="metric-desc">De minutos para segundos</div>
+        </div>
+        <div class="metric-card fade-in">
+          <div class="metric-value">24/7</div>
+          <div class="metric-label">Disponibilidade</div>
+          <div class="metric-desc">Atende fora do horario comercial</div>
+        </div>
+        <div class="metric-card fade-in">
+          <div class="metric-value"><span class="red">+35%</span></div>
+          <div class="metric-label">Mais pedidos capturados</div>
+          <div class="metric-desc">Clientes que antes desistiam</div>
+        </div>
+        <div class="metric-card fade-in">
+          <div class="metric-value">5x</div>
+          <div class="metric-label">Menos perguntas repetitivas</div>
+          <div class="metric-desc">Equipe foca no que importa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- PACOTE -->
+  <div class="full-section" id="pacote">
+    <div class="dot-grid-subtle"></div>
+    <div class="inner">
+      <div class="section-label fade-in">Investimento</div>
+      <h2 class="section-title fade-in">Tudo que o Sushi da Hora precisa</h2>
+      <p class="section-subtitle fade-in">Um pacote desenhado sob medida para a realidade das suas 5 unidades.</p>
+
+      <div class="package-box fade-in">
+        <div class="package-header">
+          <div class="package-name">Pacote <span class="accent">Da Hora</span></div>
+          <div class="package-tagline">IA + CRM + Automacoes + Dashboard</div>
+        </div>
+        <div class="package-modules">
+          <div class="module">
+            <h4>IA de Atendimento</h4>
+            <ul>
+              <li>Configuracao e treinamento personalizado</li>
+              <li>WhatsApp + Instagram DM</li>
+              <li>FAQ completa das 5 unidades</li>
+              <li>Direcionamento automatico por unidade</li>
+              <li>Transferencia inteligente pra humano</li>
+            </ul>
+          </div>
+          <div class="module">
+            <h4>CRM Completo</h4>
+            <ul>
+              <li>Base unificada de clientes</li>
+              <li>Pipelines por unidade</li>
+              <li>Tags e campos customizados</li>
+              <li>Historico de interacoes</li>
+              <li>Gestao multi-unidade</li>
+            </ul>
+          </div>
+          <div class="module">
+            <h4>Automacoes</h4>
+            <ul>
+              <li>Follow-up de leads</li>
+              <li>Reativacao de clientes</li>
+              <li>Campanhas por segmento</li>
+              <li>Notificacoes automaticas</li>
+              <li>Pesquisa de satisfacao</li>
+            </ul>
+          </div>
+          <div class="module">
+            <h4>Dashboard</h4>
+            <ul>
+              <li>Metricas em tempo real</li>
+              <li>Comparativo entre unidades</li>
+              <li>Relatorios semanais</li>
+              <li>Funil de atendimento</li>
+              <li>ROI da automacao</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="full-section">
+    <div class="inner" style="text-align:center;">
+      <div class="section-label fade-in">Implementacao</div>
+      <h2 class="section-title fade-in" style="text-align:center;">Pronto em 4 semanas</h2>
+      <p class="section-subtitle fade-in" style="margin-left:auto;margin-right:auto;text-align:center;">Processo agil e transparente do inicio ao go-live.</p>
+
+      <div class="roadmap">
+        <!-- S1 -->
+        <div class="roadmap-item fade-in">
+          <div class="roadmap-left">
+            <div class="roadmap-left-number">S1</div>
+            <div class="roadmap-left-title">Discovery & Setup</div>
+          </div>
+          <div class="roadmap-dot"><div class="roadmap-dot-inner"></div></div>
+          <div class="roadmap-content">
+            <span class="roadmap-tag">Kick-off &rarr; CRM configurado</span>
+            <p>Kick-off com a equipe, levantamento de fluxos atuais, configuracao do CRM e criacao dos pipelines para as 5 unidades.</p>
+          </div>
+        </div>
+
+        <!-- S2 -->
+        <div class="roadmap-item fade-in">
+          <div class="roadmap-left">
+            <div class="roadmap-left-number">S2</div>
+            <div class="roadmap-left-title">Treinamento da IA</div>
+          </div>
+          <div class="roadmap-dot"><div class="roadmap-dot-inner"></div></div>
+          <div class="roadmap-content">
+            <span class="roadmap-tag">IA treinada &rarr; Testes internos</span>
+            <p>Hiro treinado com cardapio, FAQ, horarios e dados reais. Testes internos com cenarios do dia a dia das unidades.</p>
+          </div>
+        </div>
+
+        <!-- S3 -->
+        <div class="roadmap-item fade-in">
+          <div class="roadmap-left">
+            <div class="roadmap-left-number">S3</div>
+            <div class="roadmap-left-title">Automacoes & Integracao</div>
+          </div>
+          <div class="roadmap-dot"><div class="roadmap-dot-inner"></div></div>
+          <div class="roadmap-content">
+            <span class="roadmap-tag">Automacoes &rarr; Canais conectados</span>
+            <p>Automacoes de follow-up, promos diarias, tags inteligentes. Integracao WhatsApp + CRM + dashboard conectados.</p>
+          </div>
+        </div>
+
+        <!-- S4 -->
+        <div class="roadmap-item fade-in">
+          <div class="roadmap-left">
+            <div class="roadmap-left-number">S4</div>
+            <div class="roadmap-left-title">Go-Live & Treinamento</div>
+          </div>
+          <div class="roadmap-dot"><div class="roadmap-dot-inner"></div></div>
+          <div class="roadmap-content">
+            <span class="roadmap-tag">Treinamento &rarr; Producao</span>
+            <p>Go-live gradual, treinamento da equipe, ajustes finos com feedback real. Hiro em producao nas 5 unidades.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta" id="contato">
+    <div class="dot-grid-subtle"></div>
+    <div class="cta-content">
+      <h2 class="fade-in">Pronto pra colocar o<br>Sushi da Hora no<br><span style="color:var(--primary)">piloto automatico</span>?</h2>
+      <p class="fade-in">Vamos conversar sobre como a IA pode transformar o atendimento das suas 5 unidades.</p>
+      <div class="fade-in">
+        <a href="https://wa.me/5519983805908?text=Oi%20Alex!%20Quero%20saber%20mais%20sobre%20a%20proposta%20de%20IA%20pro%20Sushi%20da%20Hora" class="btn btn-primary">Falar com Alex</a>
+        <a href="#demo" class="btn btn-outline">Ver Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p style="margin-bottom:0.75rem;display:flex;align-items:center;justify-content:center;">
+      <a href="https://triadeflow.ai/" target="_blank"><img src="/static/triadeflow-logo.png" alt="Triadeflow" style="height:48px;opacity:0.85;"></a>
+    </p>
+    <p>Proposta preparada exclusivamente para <strong style="color:var(--white);">Sushi da Hora</strong>, Fortaleza/CE</p>
+    <p style="margin-top:0.75rem;display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;">
+      <a href="https://triadeflow.ai/" target="_blank" style="font-weight:400;color:var(--gray-500);">triadeflow.ai</a>
+      <a href="https://wa.me/5519983805908" target="_blank" style="font-weight:400;color:var(--gray-500);">+55 19 98380-5908</a>
+    </p>
+    <p style="margin-top:1rem;font-size:0.6rem;color:rgba(255,255,255,0.12);line-height:1.6;">
+      Av. Des. Moreira, 1300 - Sala 1002 - Aldeota, Fortaleza - CE, 60170-002, Brasil<br>
+      CNPJ: 61.448.621/0001-2
+    </p>
+    <p style="margin-top:0.75rem;font-size:0.6rem;color:rgba(255,255,255,0.15);">&copy; 2025 TriadeFlow. All rights reserved.</p>
+  </footer>
+
+  <script>
+  // === SCROLL ANIMATIONS ===
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      } else {
+        entry.target.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // === ROADMAP LINE ANIMATION ===
+  const roadmap = document.querySelector('.roadmap');
+  if (roadmap) {
+    const lineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          roadmap.classList.add('line-visible');
+        } else {
+          roadmap.classList.remove('line-visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    lineObserver.observe(roadmap);
+  }
+
+  // === LIVE CHAT ===
+  (function() {
+    const API_URL = '/api/chat';
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatStatus = document.getElementById('chat-status');
+    let sending = false;
+
+    function getTime() {
+      const now = new Date();
+      return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    }
+
+    function addMsg(text, type) {
+      const div = document.createElement('div');
+      div.className = 'msg msg-' + type;
+
+      const imgMatch = text.match(/\[IMAGEM:\s*(.*?)\]/);
+      if (imgMatch) {
+        const img = document.createElement('img');
+        img.src = imgMatch[1].trim();
+        img.style.cssText = 'max-width:100%;border-radius:6px;margin-bottom:4px;';
+        img.alt = 'Promocao do dia';
+        div.appendChild(img);
+      } else {
+        const span = document.createElement('span');
+        span.textContent = text + ' ';
+        div.appendChild(span);
+      }
+
+      const time = document.createElement('span');
+      time.className = 'msg-time';
+      time.textContent = getTime();
+      div.appendChild(time);
+
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing-indicator';
+      div.id = 'typing';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typing');
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || sending) return;
+
+      sending = true;
+      chatSend.disabled = true;
+      chatInput.value = '';
+      chatStatus.textContent = 'digitando...';
+
+      addMsg(text, 'user');
+      showTyping();
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, name: 'Visitante' }),
+        });
+
+        hideTyping();
+
+        if (!res.ok) {
+          addMsg('Ops, tive um problema. Tenta de novo!', 'bot');
+          return;
+        }
+
+        const data = await res.json();
+        const msgs = data.messages || [];
+
+        if (msgs.length === 0) {
+          addMsg('Hmm, nao consegui processar. Tenta outra pergunta!', 'bot');
+          return;
+        }
+
+        for (let i = 0; i < msgs.length; i++) {
+          await new Promise(r => setTimeout(r, i === 0 ? 200 : 600));
+          addMsg(msgs[i], 'bot');
+        }
+      } catch (err) {
+        hideTyping();
+        addMsg('Servidor offline no momento. O Hiro volta logo!', 'bot');
+      } finally {
+        sending = false;
+        chatSend.disabled = false;
+        chatStatus.textContent = 'online';
+        chatInput.focus();
+      }
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  })();
+  </script>
+
+</body>
+</html>

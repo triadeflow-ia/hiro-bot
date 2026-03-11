@@ -1,4 +1,4 @@
-"""GoHighLevel CRM API client — Sushi da Hora."""
+"""GoHighLevel CRM API client for Sushi da Hora."""
 
 from __future__ import annotations
 
@@ -103,3 +103,11 @@ async def add_note(contact_id: str, body: str) -> dict:
         resp = await client.post(f"{BASE_URL}/contacts/{contact_id}/notes", headers=_headers(), json={"body": body})
         resp.raise_for_status()
         return resp.json()
+
+
+async def get_notes(contact_id: str) -> list[dict]:
+    """Fetch recent notes for a contact."""
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.get(f"{BASE_URL}/contacts/{contact_id}/notes", headers=_headers())
+        resp.raise_for_status()
+        return resp.json().get("notes", [])

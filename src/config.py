@@ -1,4 +1,4 @@
-"""Configuration — env vars."""
+"""Configuration (env vars)."""
 
 from pydantic_settings import BaseSettings
 
@@ -7,6 +7,10 @@ class Settings(BaseSettings):
     # LLM
     openai_api_key: str = ""
     openai_model: str = "gpt-4.1"
+
+    # Anthropic (Claude)
+    anthropic_api_key: str = ""
+    anthropic_model: str = "claude-haiku-4-5-20251001"
 
     # GHL CRM
     ghl_api_token: str = ""
@@ -23,6 +27,9 @@ class Settings(BaseSettings):
 
     # App
     port: int = 8000
+
+    # Promo images
+    promo_base_url: str = "https://hiro-bot-production.up.railway.app/static/promos"
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
