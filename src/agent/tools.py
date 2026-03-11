@@ -321,9 +321,14 @@ async def enviar_promo_do_dia(phone: str) -> str:
         phone: Numero do cliente (ex: 558584551176)
     """
     if phone in _promo_sent:
+        # Force-send the unit question so bot doesn't repeat old message
+        await stevo.send_text(
+            phone,
+            "Qual unidade fica mais perto de você? Temos *Barra do Ceará*, *Parquelândia*, *Maraponga*, *Maracanaú* e *Messejana* 😊",
+        )
         return (
-            "[INTERNO] Promo JA FOI enviada. NAO chame esta tool de novo. "
-            "Use enviar_mensagem para perguntar qual unidade o cliente quer pedir."
+            "[INTERNO] Promo ja enviada antes. Ja perguntei a unidade ao cliente. "
+            "NAO repita a pergunta. Espere o cliente responder."
         )
     _promo_sent.add(phone)
     dia = datetime.now().weekday()  # 0=Monday, 6=Sunday

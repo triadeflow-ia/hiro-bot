@@ -257,10 +257,20 @@ async def run_agent(
                         break
 
             if ai_response:
-                _add_to_history(phone, "ai", ai_response)
+                # Don't re-send if it's the same as the last AI message in history
+                last_ai_msg = None
+                for h in reversed(history):
+                    if hasattr(h, "content") and isinstance(h, AIMessage):
+                        last_ai_msg = h.content
+                        break
 
-                # If agent didn't send via tool, send the response now
-                if not sent_via_tool:
+                is_duplicate = ai_response == last_ai_msg
+
+                if not is_duplicate:
+                    _add_to_history(phone, "ai", ai_response)
+
+                # If agent didn't send via tool, send the response now (skip duplicates)
+                if not sent_via_tool and not is_duplicate:
                     try:
                         from src.integrations.stevo import send_text
                         await send_text(phone, ai_response)
