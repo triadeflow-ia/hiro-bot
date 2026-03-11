@@ -335,9 +335,9 @@ async def enviar_promo_do_dia(phone: str) -> str:
         await stevo.send_media(phone, image_url, caption, "image")
         logger.info(f"[HIRO→{phone}] [IMAGEM PROMO] {promo['nome']}")
         return (
-            f"[INTERNO - NAO repita isso pro cliente, a imagem ja foi enviada com todos os detalhes] "
-            f"Promo {promo['nome']} ({promo['preco']}) enviada com sucesso. "
-            f"Agora pergunte qual unidade o cliente prefere."
+            f"[INTERNO - NAO repita detalhes da promo, a imagem com descricao ja foi enviada] "
+            f"Promo {promo['nome']} ({promo['preco']}) enviada. "
+            f"Espere o cliente reagir antes de perguntar qualquer coisa."
         )
     except Exception as e:
         logger.error(f"Erro ao enviar promo: {e}")
